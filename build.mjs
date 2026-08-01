@@ -33,7 +33,9 @@ writeDoc("index.html", pagesHub);
 writeDoc("angola-app.html", readText("prototype/angola-app.html"));
 writeDoc("angola-app-zh.html", readText("prototype/angola-app.html"));
 writeDoc("bangladesh-web.html", readText("prototype/bangladesh-web.html"));
-writeDoc("bangladesh-web-zh.html", readText("prototype/bangladesh-web-zh.html"));
+writeDoc("bangladesh-web-zh.html", readText("prototype/bangladesh-web.html"));
+writeDoc("indonesia-web.html", readText("prototype/bangladesh-web.html"));
+writeDoc("indonesia-web-zh.html", readText("prototype/bangladesh-web.html"));
 writeDoc("unified-admin.html", readText("prototype/unified-admin.html"));
 writeDoc("白名单电销系统_PRD_v1.0.md", readText("白名单电销系统_PRD_v1.0.md"));
 writeDoc("directions/index.html", pagesChooser);
@@ -49,7 +51,9 @@ const siteFiles = {
   "/angola-app.html": { body: readText("prototype/angola-app.html"), contentType: "text/html; charset=utf-8" },
   "/angola-app-zh.html": { body: readText("prototype/angola-app.html"), contentType: "text/html; charset=utf-8" },
   "/bangladesh-web.html": { body: readText("prototype/bangladesh-web.html"), contentType: "text/html; charset=utf-8" },
-  "/bangladesh-web-zh.html": { body: readText("prototype/bangladesh-web-zh.html"), contentType: "text/html; charset=utf-8" },
+  "/bangladesh-web-zh.html": { body: readText("prototype/bangladesh-web.html"), contentType: "text/html; charset=utf-8" },
+  "/indonesia-web.html": { body: readText("prototype/bangladesh-web.html"), contentType: "text/html; charset=utf-8" },
+  "/indonesia-web-zh.html": { body: readText("prototype/bangladesh-web.html"), contentType: "text/html; charset=utf-8" },
   "/unified-admin.html": { body: readText("prototype/unified-admin.html"), contentType: "text/html; charset=utf-8" },
   "/白名单电销系统_PRD_v1.0.md": { body: readText("白名单电销系统_PRD_v1.0.md"), contentType: "text/markdown; charset=utf-8" },
   "/directions/": { body: chooser, contentType: "text/html; charset=utf-8" },

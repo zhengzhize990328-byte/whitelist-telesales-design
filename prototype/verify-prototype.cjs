@@ -73,10 +73,31 @@ const fileUrl = name => "file://" + path.join(root, name);
   await webZh.page.screenshot({ path: path.join(out, "bangladesh-web-zh.png"), fullPage: true });
   checks.push({ page: "Bangladesh Agent Web Chinese", errors: webZh.errors.length });
 
+  const indonesia = await makePage("../docs/indonesia-web.html", { width: 1440, height: 900 });
+  if (!((await indonesia.page.locator(".head h1").textContent()).includes("Dasbor"))) throw new Error("Indonesia business language did not load");
+  if ((await indonesia.page.locator("#countrySelect").inputValue()) !== "id") throw new Error("Indonesia country profile was not selected");
+  await indonesia.page.locator('[data-go="customer"]').first().click();
+  if (!((await indonesia.page.locator(".case-hero").textContent()).includes("+62"))) throw new Error("Indonesia phone localization is missing");
+  if ((await indonesia.page.locator(".priority").textContent()).includes("88")) throw new Error("Indonesia desk still exposes a priority score");
+  await indonesia.page.locator('[data-go="call"]').first().click();
+  await indonesia.page.locator("#callButton").click();
+  await indonesia.page.locator("#callButton").click();
+  await indonesia.page.locator('[data-result="callback"]').click();
+  await indonesia.page.locator("#saveResult").click();
+  await indonesia.page.screenshot({ path: path.join(out, "indonesia-web.png"), fullPage: true });
+  checks.push({ page: "Indonesia Agent Web", errors: indonesia.errors.length });
+
+  const indonesiaZh = await makePage("../docs/indonesia-web-zh.html", { width: 1440, height: 900 });
+  if (!((await indonesiaZh.page.title()).includes("印尼"))) throw new Error("Indonesia Chinese explanation did not load");
+  if (!((await indonesiaZh.page.locator(".crumb").textContent()).includes("印尼"))) throw new Error("Indonesia Chinese country context is missing");
+  await indonesiaZh.page.screenshot({ path: path.join(out, "indonesia-web-zh.png"), fullPage: true });
+  checks.push({ page: "Indonesia Agent Web Chinese", errors: indonesiaZh.errors.length });
+
   const admin = await makePage("unified-admin.html", { width: 1440, height: 900 });
-  await admin.page.locator("#marketSelect").selectOption("bd");
-  if (!((await admin.page.locator(".head p").textContent()).includes("孟加拉"))) throw new Error("Admin market switch did not update the overview");
+  await admin.page.locator("#marketSelect").selectOption("id");
+  if (!((await admin.page.locator(".head p").textContent()).includes("印尼"))) throw new Error("Admin market switch did not update the Indonesia overview");
   await admin.page.locator('[data-go="cases"]').click();
+  if (!((await admin.page.locator("tbody").textContent()).includes("ID-0921"))) throw new Error("Admin Indonesia case routing is missing");
   await admin.page.locator(".case-check").first().check();
   await admin.page.locator("#releaseSelected").click();
   if (!(await admin.page.locator("#actionModal.show").isVisible())) throw new Error("Admin release confirmation did not open");
@@ -85,6 +106,8 @@ const fileUrl = name => "file://" + path.join(root, name);
   await admin.page.locator("#confirmTransfer").click();
   await admin.page.locator("#modalConfirm").click();
   await admin.page.locator('[data-go="rules"]').click();
+  if ((await admin.page.locator('input[type="range"]').count()) !== 0) throw new Error("Admin still contains priority weight sliders");
+  if (!((await admin.page.locator("#main").textContent()).includes("容量公平轮询"))) throw new Error("Admin fair allocation rule is missing");
   await admin.page.locator("#publishRule").click();
   await admin.page.locator("#modalConfirm").click();
   if (!((await admin.page.locator("#publishRule").textContent()).includes("已发布"))) throw new Error("Admin allocation rule did not publish");
@@ -93,6 +116,7 @@ const fileUrl = name => "file://" + path.join(root, name);
 
   const hub = await makePage("index.html", { width: 1440, height: 1000 });
   if ((await hub.page.locator(".card").count()) !== 3) throw new Error("Prototype hub does not show all three surfaces");
+  if (!(await hub.page.locator('a[href="indonesia-web.html"]').isVisible())) throw new Error("Indonesia Web entry is missing from prototype hub");
   await hub.page.screenshot({ path: path.join(out, "prototype-hub.png"), fullPage: true });
   checks.push({ page: "Prototype Hub", errors: hub.errors.length });
 
@@ -100,7 +124,7 @@ const fileUrl = name => "file://" + path.join(root, name);
   if (!(await chooser.page.locator('a[href="prototype/index.html"]').isVisible())) throw new Error("Prototype entry is missing from direction page");
   checks.push({ page: "Direction Entry", errors: chooser.errors.length });
 
-  const totalErrors = [...app.errors, ...appZh.errors, ...web.errors, ...webZh.errors, ...admin.errors, ...hub.errors, ...chooser.errors];
+  const totalErrors = [...app.errors, ...appZh.errors, ...web.errors, ...webZh.errors, ...indonesia.errors, ...indonesiaZh.errors, ...admin.errors, ...hub.errors, ...chooser.errors];
   console.log(JSON.stringify({ checks, totalErrors }, null, 2));
   await browser.close();
   if (totalErrors.length) process.exit(1);
