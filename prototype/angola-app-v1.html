@@ -1,0 +1,246 @@
+<!doctype html>
+<!--
+ASSUMPTIONS
+- This is a whitelist loan sales prototype, never a collection product.
+- Angola field agents use pt-AO on Android.
+- Agents cannot browse, claim, swap, or cherry-pick unassigned leads.
+- All numbers and customer names are illustrative prototype data.
+
+DESIGN REASONING
+- Direction A is preserved: mineral blue, navy, square status language, compact operational density.
+- Six Android frames provide an at-a-glance product map; each frame is independently interactive.
+- The exact Pixel-style AndroidFrame dimensions from huashu-design are preserved.
+-->
+<html lang="pt-AO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Linha Clara — Protótipo Android Angola</title>
+  <style>
+    :root{
+      --ink:#15233b;--muted:#68758a;--line:#dce4ed;--soft:#edf2f7;--paper:#fff;
+      --canvas:#eaf0f5;--panel:#f6f8fb;--blue:#1e5eff;--blue-dark:#1549c8;--blue-pale:#eaf0ff;
+      --green:#16805a;--green-pale:#e7f5ef;--amber:#a86200;--amber-pale:#fff2d8;
+      --red:#b84543;--red-pale:#fdeceb;--nav:#12213a;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--canvas);color:var(--ink)}
+    body{font-family:"Avenir Next","Noto Sans",system-ui,sans-serif}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .page{
+      min-height:100vh;padding:34px 38px 54px;
+      background:linear-gradient(90deg,rgba(19,36,59,.035) 1px,transparent 1px) 0 0/40px 40px,var(--canvas);
+    }
+    .page-head{max-width:1480px;margin:0 auto 28px;display:flex;justify-content:space-between;gap:40px;align-items:flex-end}
+    .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);font-weight:800}
+    h1{font-size:34px;line-height:1.05;letter-spacing:-.04em;margin:8px 0 9px}
+    .head-copy{font-size:13px;color:var(--muted);max-width:720px;line-height:1.65;margin:0}
+    .head-note{font-size:11px;color:var(--muted);text-align:right;line-height:1.6}
+    .head-note b{display:block;color:var(--ink);font-size:12px}
+    .phone-grid{max-width:1480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:28px 24px;align-items:start}
+    .device-slot{min-width:0}
+    .device-label{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;padding:0 4px}
+    .device-label b{font-size:12px}
+    .device-label span{font-size:10px;color:var(--muted);font-style:italic}
+    .phone-stage{height:666px;display:flex;justify-content:center;overflow:hidden}
+    .phone-scale{width:432px;height:912px;transform:scale(.72);transform-origin:top center}
+
+    /* Exact AndroidFrame values translated from assets/android_frame.jsx */
+    .android-frame{display:inline-block;padding:10px;background:#1a1a1a;border-radius:44px;box-shadow:0 0 0 2px #2a2a2a,0 20px 60px rgba(0,0,0,.3);position:relative}
+    .android-screen{position:relative;width:412px;height:892px;border-radius:36px;overflow:hidden;background:#fff}
+    .status-bar{position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;font-family:Roboto,-apple-system,sans-serif;z-index:20;pointer-events:none;color:#1a1a1a}
+    .punch-hole{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:14px;height:14px;background:#000;border-radius:50%;z-index:30}
+    .status-icons{display:flex;align-items:center;gap:6px}
+    .signal{display:flex;gap:2px;align-items:flex-end;height:10px}
+    .signal i{display:block;width:2px;background:currentColor;border-radius:1px}.signal i:nth-child(1){height:4px}.signal i:nth-child(2){height:6px}.signal i:nth-child(3){height:8px}.signal i:nth-child(4){height:10px}
+    .wifi{font-size:11px;font-weight:800}.battery{width:22px;height:10px;border:1.5px solid currentColor;border-radius:2px;padding:1px}.battery span{display:block;width:84%;height:100%;background:currentColor;border-radius:1px}.battery-text{font-size:11px;font-weight:600}
+    .phone-content{position:absolute;top:32px;left:0;right:0;bottom:24px;overflow:hidden;background:#f5f7fa}
+    .android-nav{position:absolute;bottom:0;left:0;right:0;height:24px;display:flex;align-items:center;justify-content:center;z-index:10}
+    .android-nav span{width:100px;height:4px;background:rgba(0,0,0,.4);border-radius:999px}
+
+    .app-screen{height:100%;display:grid;grid-template-rows:68px 1fr 68px;background:#f4f7fa}
+    .app-top{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-mark{width:29px;height:29px;background:var(--blue);border-radius:7px;position:relative}
+    .brand-mark:before{content:"";position:absolute;width:10px;height:3px;background:white;left:5px;top:8px;box-shadow:0 5px 0 white}
+    .brand-mark:after{content:"";position:absolute;width:4px;height:13px;background:white;right:6px;top:7px}
+    .brand strong{font-size:14px;display:block}.brand small{font-size:9px;color:var(--muted);display:block;margin-top:2px}
+    .online{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--green);font-weight:800}
+    .online i{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 0 3px var(--green-pale)}
+    .screen-scroll{overflow:auto;padding:17px 17px 24px;scrollbar-width:none}.screen-scroll::-webkit-scrollbar{display:none}
+    .app-tabs{background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 7px 0}
+    .tab{border:0;background:transparent;color:#7c8798;font-size:9px;font-weight:750;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+    .tab span{width:22px;height:20px;display:grid;place-items:center;border:1px solid #c9d2de;color:#69778a;font-size:9px}
+    .tab.active{color:var(--blue)}.tab.active span{background:var(--blue);border-color:var(--blue);color:#fff}
+    .section-kicker{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:800}
+    .screen-title{font-size:22px;letter-spacing:-.04em;margin:5px 0 4px}
+    .screen-sub{font-size:10px;color:var(--muted);line-height:1.45;margin:0}
+    .metric-row{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:#fff;margin-top:15px}
+    .metric{padding:12px 10px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}
+    .metric small{font-size:8px;color:var(--muted);display:block}.metric b{font-size:17px;display:block;margin-top:5px}.metric em{font-size:8px;color:var(--green);font-style:normal;font-weight:800}
+    .next-card{background:#fff;border:1px solid #d7e0eb;box-shadow:0 6px 20px rgba(28,48,75,.07);margin-top:14px}
+    .card-topline{height:28px;background:var(--blue-pale);color:var(--blue-dark);font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 12px;text-transform:uppercase;letter-spacing:.05em}
+    .card-topline span:last-child{color:var(--green)}
+    .client{padding:14px;display:flex;gap:11px;align-items:center;border-bottom:1px solid var(--line)}
+    .avatar{width:42px;height:42px;border-radius:50%;background:#dce7fa;color:#244d88;display:grid;place-items:center;font-size:14px;font-weight:900}
+    .client h3{font-size:17px;margin:0}.client p{font-size:9px;color:var(--muted);margin:4px 0 0}.priority{margin-left:auto;text-align:right}.priority b{font-size:17px;color:var(--blue);display:block}.priority small{font-size:7px;color:var(--muted);text-transform:uppercase}
+    .facts{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+    .fact{padding:11px 13px;border-right:1px solid var(--line)}.fact:last-child{border-right:0}.fact small{font-size:8px;color:var(--muted);display:block}.fact b{font-size:11px;display:block;margin-top:4px}
+    .product{padding:12px 13px}.product small{font-size:8px;color:var(--muted)}.product-row{display:flex;justify-content:space-between;align-items:center;margin-top:5px}.product-row b{font-size:12px}.product-row span{font-size:9px;color:var(--green);font-weight:800}
+    .primary{width:100%;height:48px;border:0;background:var(--blue);color:#fff;font-size:13px;font-weight:850;margin-top:12px;box-shadow:0 6px 14px rgba(30,94,255,.22)}
+    .primary:hover{background:var(--blue-dark)}
+    .secondary{height:38px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:0 13px;font-size:10px;font-weight:750}
+    .notice{margin-top:11px;padding:10px 11px;background:var(--amber-pale);font-size:9px;line-height:1.5;color:#79531e}
+    .queue-head{display:flex;justify-content:space-between;align-items:center;margin:13px 0 9px}.queue-head b{font-size:11px}.system-chip{font-size:8px;color:var(--blue);background:var(--blue-pale);padding:5px 7px;font-weight:800}
+    .filter-row{display:flex;gap:6px;margin-top:13px}.filter{border:1px solid var(--line);background:#fff;height:28px;padding:0 9px;font-size:8px;color:var(--muted)}.filter.active{color:#fff;background:var(--nav);border-color:var(--nav)}
+    .queue-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);padding:11px;margin-bottom:8px}
+    .queue-item .avatar{width:34px;height:34px;font-size:10px}.queue-item h4{font-size:11px;margin:0}.queue-item p{font-size:8px;color:var(--muted);margin:3px 0 0}.queue-meta{margin-left:auto;text-align:right}.queue-meta b{font-size:10px;display:block}.queue-meta span{font-size:7px;color:var(--green)}
+    .locked{margin-top:10px;border:1px dashed #b9c5d3;padding:10px;font-size:8px;line-height:1.5;color:var(--muted);text-align:center}
+    .call-hero{background:var(--nav);color:#fff;margin:-17px -17px 0;padding:30px 20px 24px;text-align:center}
+    .recording{font-size:9px;color:#85e2bd;text-transform:uppercase;letter-spacing:.09em;font-weight:800}.recording i{display:inline-block;width:7px;height:7px;background:#4dd29b;border-radius:50%;margin-right:6px}
+    .call-avatar{width:68px;height:68px;background:#dce7fa;color:#244d88;border-radius:50%;display:grid;place-items:center;margin:20px auto 12px;font-size:19px;font-weight:900}
+    .call-hero h2{font-size:21px;margin:0}.call-hero p{font-size:9px;color:#aebed2;margin:5px 0}.timer{font-variant-numeric:tabular-nums;font-size:25px;margin-top:14px;font-weight:750;letter-spacing:.08em}
+    .call-bars{height:24px;display:flex;align-items:center;justify-content:center;gap:4px;margin-top:14px}.call-bars i{width:3px;background:#6e95ff}.call-bars i:nth-child(1){height:6px}.call-bars i:nth-child(2){height:13px}.call-bars i:nth-child(3){height:20px}.call-bars i:nth-child(4){height:10px}.call-bars i:nth-child(5){height:17px}.call-bars i:nth-child(6){height:8px}.call-bars i:nth-child(7){height:15px}
+    .script-card{background:#fff;border:1px solid var(--line);padding:13px;margin-top:12px}.script-card b{font-size:10px}.script-card p{font-size:10px;line-height:1.55;color:#42516a;margin:8px 0 0}
+    .end-call{width:100%;height:46px;border:0;background:var(--red);color:#fff;font-size:12px;font-weight:850;margin-top:12px}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+    .result-choice{min-height:49px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:9px;font-weight:750;padding:8px;text-align:left}.result-choice.selected{border-color:var(--blue);background:var(--blue-pale);color:var(--blue-dark)}
+    .schedule{display:none;margin-top:12px;background:#fff;border:1px solid var(--line);padding:12px}.schedule.show{display:block}.schedule label{font-size:8px;color:var(--muted);display:block;margin-bottom:5px}.schedule input{width:100%;height:35px;border:1px solid var(--line);padding:0 9px;font-size:10px}
+    .follow-card{background:#fff;border:1px solid var(--line);padding:12px;margin-top:10px;display:grid;grid-template-columns:46px 1fr auto;gap:10px;align-items:center}
+    .timebox{background:var(--nav);color:#fff;text-align:center;padding:7px 3px}.timebox b{font-size:12px;display:block}.timebox small{font-size:7px;color:#aebed2}.follow-card h4{font-size:11px;margin:0}.follow-card p{font-size:8px;color:var(--muted);margin:4px 0 0}.follow-card button{border:0;background:var(--blue-pale);color:var(--blue);font-size:8px;font-weight:800;height:28px;padding:0 8px}
+    .goal{background:var(--nav);color:#fff;padding:16px;margin-top:14px}.goal small{font-size:8px;color:#9fb0c8}.goal b{font-size:23px;display:block;margin:5px 0}.goal p{font-size:8px;color:#aebed2;margin:0}.goalbar{height:5px;background:#2b3f5c;margin-top:12px}.goalbar span{display:block;width:72%;height:100%;background:#56c79c}
+    .funnel{background:#fff;border:1px solid var(--line);margin-top:12px;padding:13px}.funnel-row{display:grid;grid-template-columns:78px 1fr 36px;gap:9px;align-items:center;margin:10px 0}.funnel-row label{font-size:9px;color:var(--muted)}.funnel-row .bar{height:7px;background:#edf1f5}.funnel-row .bar span{display:block;height:100%;background:var(--blue)}.funnel-row b{font-size:9px;text-align:right}
+    .toast{position:absolute;left:24px;right:24px;bottom:80px;background:var(--nav);color:#fff;padding:12px 14px;font-size:10px;box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;transform:translateY(8px);transition:.18s;pointer-events:none;z-index:50}.toast.show{opacity:1;transform:none}
+    @media(max-width:1050px){.phone-grid{grid-template-columns:repeat(2,1fr)}.page-head{align-items:flex-start}.head-note{display:none}}
+    @media(max-width:680px){.phone-grid{grid-template-columns:1fr}.page{padding:24px 12px}.phone-stage{height:700px}.phone-scale{transform:scale(.76)}h1{font-size:29px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <div>
+        <div class="eyebrow">Angola · Android · pt-AO</div>
+        <h1>Fluxo completo do agente</h1>
+        <p class="head-copy">Seis estados principais, todos clicáveis. A fila é definida pelo sistema: o agente conclui a chamada, regista o resultado e recebe automaticamente o próximo cliente.</p>
+      </div>
+      <div class="head-note"><b>Protótipo funcional · Direção A</b>Clique nas abas, em “Ligar agora”, resultados e retornos.</div>
+    </header>
+    <section class="phone-grid" id="phoneGrid"></section>
+  </main>
+  <script>
+    const screenLabels={
+      home:["01 · Hoje","Resumo e próximo cliente"],
+      lead:["02 · Fila atribuída","Sem escolha manual"],
+      call:["03 · Chamada","Assistência em tempo real"],
+      result:["04 · Resultado","Registo obrigatório"],
+      followups:["05 · Retornos","Agenda protegida"],
+      performance:["06 · Desempenho","Conversão individual"]
+    };
+
+    function tabs(active){
+      return `<nav class="app-tabs">
+        <button class="tab ${active==="home"?"active":""}" data-screen="home"><span>H</span>Hoje</button>
+        <button class="tab ${active==="lead"?"active":""}" data-screen="lead"><span>F</span>Fila</button>
+        <button class="tab ${active==="followups"?"active":""}" data-screen="followups"><span>R</span>Retornos</button>
+        <button class="tab ${active==="performance"?"active":""}" data-screen="performance"><span>D</span>Dados</button>
+      </nav>`;
+    }
+    function topbar(subtitle="Vendas assistidas"){
+      return `<header class="app-top"><div class="brand"><div class="brand-mark"></div><div><strong>Linha Clara</strong><small>${subtitle}</small></div></div><div class="online"><i></i>Sincronizado</div></header>`;
+    }
+    function appShell(content,active,subtitle){
+      return `<div class="app-screen">${topbar(subtitle)}<div class="screen-scroll">${content}</div>${tabs(active)}</div>`;
+    }
+    function homeScreen(){
+      return appShell(`
+        <div class="section-kicker">Minha operação · hoje</div><h2 class="screen-title">Bom dia, Amélia</h2><p class="screen-sub">O sistema preparou a próxima oportunidade.</p>
+        <div class="metric-row"><div class="metric"><small>Concluídos</small><b>12</b><em>+3 hoje</em></div><div class="metric"><small>Retornos</small><b>3</b><em>no prazo</em></div><div class="metric"><small>Pedidos</small><b>4</b><em>33%</em></div></div>
+        <article class="next-card"><div class="card-topline"><span>Próximo cliente</span><span>Lista nova · 18 min</span></div><div class="client"><div class="avatar">JM</div><div><h3>Joana Manuel</h3><p>Luanda · Português</p></div><div class="priority"><b>86</b><small>prioridade</small></div></div><div class="facts"><div class="fact"><small>Origem</small><b>Campanha Julho</b></div><div class="fact"><small>Melhor horário</small><b>Agora</b></div></div><div class="product"><small>Produto principal</small><div class="product-row"><b>Crédito Flex</b><span>Alta afinidade</span></div></div></article>
+        <button class="primary" data-action="call" data-testid="app-call">Ligar agora · 923 640 218</button>
+        <div class="notice">O cliente foi atribuído automaticamente. Não é possível trocar ou escolher outro contacto.</div>
+      `,"home");
+    }
+    function leadScreen(){
+      return appShell(`
+        <div class="section-kicker">Fila atribuída</div><h2 class="screen-title">18 contactos</h2><p class="screen-sub">Ordem definida pela regra Angola · Flex v4.</p>
+        <div class="filter-row"><button class="filter active">Agora</button><button class="filter">Retorno</button><button class="filter">Alta intenção</button></div>
+        <div class="queue-head"><b>Próximos na sua fila</b><span class="system-chip">ORDEM BLOQUEADA</span></div>
+        <article class="queue-item"><div class="avatar">JM</div><div><h4>Joana Manuel</h4><p>Crédito Flex · primeiro contacto</p></div><div class="queue-meta"><b>Agora</b><span>86 pts</span></div></article>
+        <article class="queue-item"><div class="avatar">AD</div><div><h4>António Domingos</h4><p>Crédito Flex · Luanda</p></div><div class="queue-meta"><b>09:52</b><span>82 pts</span></div></article>
+        <article class="queue-item"><div class="avatar">MS</div><div><h4>Maria Sebastião</h4><p>Crédito Start · retorno</p></div><div class="queue-meta"><b>10:10</b><span>protegido</span></div></article>
+        <div class="locked">A fila é apenas informativa. O botão de chamada é libertado por ordem pelo sistema.</div>
+        <button class="primary" data-action="call">Abrir contacto atual</button>
+      `,"lead","Fila automática");
+    }
+    function callScreen(){
+      return appShell(`
+        <div class="call-hero"><div class="recording"><i></i>Chamada gravada</div><div class="call-avatar">JM</div><h2>Joana Manuel</h2><p>Crédito Flex · 923 640 218</p><div class="timer">02:18</div><div class="call-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <article class="script-card"><b>Abertura recomendada</b><p>“Bom dia, Joana. Falo da Linha Clara. Tem uma opção de crédito pré-selecionada. Posso explicar em dois minutos?”</p></article>
+        <article class="script-card"><b>Sinal do cliente</b><p>Simulação iniciada ontem · produto principal bloqueado como Crédito Flex.</p></article>
+        <button class="end-call" data-action="end-call" data-testid="app-end-call">Terminar e registar resultado</button>
+      `,"home","Chamada em curso");
+    }
+    function resultScreen(){
+      return appShell(`
+        <div class="section-kicker">Resultado obrigatório</div><h2 class="screen-title">Como terminou?</h2><p class="screen-sub">Selecione uma opção para libertar o próximo contacto.</p>
+        <div class="result-grid" data-result-grid>
+          <button class="result-choice" data-result="interessado">Interessado</button><button class="result-choice" data-result="retorno">Agendar retorno</button>
+          <button class="result-choice" data-result="registo">A iniciar registo</button><button class="result-choice" data-result="pedido">Pedido iniciado</button>
+          <button class="result-choice" data-result="nao-atende">Não atendeu</button><button class="result-choice" data-result="recusa">Não tem interesse</button>
+          <button class="result-choice" data-result="invalido">Número inválido</button><button class="result-choice" data-result="dnc">Não contactar</button>
+        </div>
+        <div class="schedule"><label>Data e hora do retorno</label><input value="27/07/2026 · 10:30"></div>
+        <article class="script-card"><b>Nota da chamada</b><p contenteditable="true">Cliente pediu explicação sobre o prazo e a prestação mensal.</p></article>
+        <button class="primary" data-action="save-result" data-testid="app-save-result">Guardar e receber próximo</button>
+      `,"home","Resultado da chamada");
+    }
+    function followupsScreen(){
+      return appShell(`
+        <div class="section-kicker">Agenda protegida</div><h2 class="screen-title">Retornos de hoje</h2><p class="screen-sub">O retorno volta sempre ao agente original.</p>
+        <article class="follow-card"><div class="timebox"><b>10:30</b><small>HOJE</small></div><div><h4>Maria Sebastião</h4><p>Crédito Start · pediu para ligar depois</p></div><button data-action="call">Ligar</button></article>
+        <article class="follow-card"><div class="timebox"><b>11:15</b><small>HOJE</small></div><div><h4>Pedro Manuel</h4><p>Registo incompleto · Crédito Flex</p></div><button data-action="call">Ligar</button></article>
+        <article class="follow-card"><div class="timebox"><b>14:40</b><small>HOJE</small></div><div><h4>Ana Tavares</h4><p>Crédito aprovado · orientar pedido</p></div><button data-action="call">Ligar</button></article>
+        <div class="notice">1 retorno vence nos próximos 30 minutos. O sistema dá prioridade automática.</div>
+      `,"followups","Agenda de retornos");
+    }
+    function performanceScreen(){
+      return appShell(`
+        <div class="section-kicker">Meu desempenho</div><h2 class="screen-title">Conversão de hoje</h2><p class="screen-sub">Qualidade e resultado, não apenas volume.</p>
+        <div class="goal"><small>Meta diária · pedidos iniciados</small><b>4 de 6</b><p>72% da meta · equipa em 68%</p><div class="goalbar"><span></span></div></div>
+        <div class="metric-row"><div class="metric"><small>Chamadas</small><b>18</b><em>12 ligadas</em></div><div class="metric"><small>Contacto</small><b>66%</b><em>+4 pts</em></div><div class="metric"><small>Qualidade</small><b>92</b><em>aprovado</em></div></div>
+        <article class="funnel"><div class="section-kicker">Meu funil</div><div class="funnel-row"><label>Atribuídos</label><div class="bar"><span style="width:100%"></span></div><b>18</b></div><div class="funnel-row"><label>Ligados</label><div class="bar"><span style="width:67%"></span></div><b>12</b></div><div class="funnel-row"><label>Interessados</label><div class="bar"><span style="width:39%"></span></div><b>7</b></div><div class="funnel-row"><label>Pedidos</label><div class="bar"><span style="width:22%"></span></div><b>4</b></div></article>
+      `,"performance","Desempenho");
+    }
+    const renderers={home:homeScreen,lead:leadScreen,call:callScreen,result:resultScreen,followups:followupsScreen,performance:performanceScreen};
+    const initialScreens=["home","lead","call","result","followups","performance"];
+
+    function deviceMarkup(screen,index){
+      const [label,desc]=screenLabels[screen];
+      return `<article class="device-slot"><div class="device-label"><b>${label}</b><span>${desc}</span></div><div class="phone-stage"><div class="phone-scale"><div class="android-frame"><div class="android-screen"><div class="status-bar"><span>9:41</span><div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span class="wifi">⌁</span><span class="battery"><span></span></span><span class="battery-text">84%</span></div></div><div class="punch-hole"></div><div class="phone-content" data-phone="${index}">${renderers[screen]()}</div><div class="android-nav"><span></span></div><div class="toast">Resultado guardado. Próximo cliente atribuído.</div></div></div></div></div></article>`;
+    }
+    const grid=document.getElementById("phoneGrid");
+    grid.innerHTML=initialScreens.map(deviceMarkup).join("");
+
+    function changeScreen(phone,screen){phone.innerHTML=renderers[screen]();}
+    function showToast(phone,message){
+      const android=phone.closest(".android-screen");const toast=android.querySelector(".toast");toast.textContent=message;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700);
+    }
+    grid.addEventListener("click",event=>{
+      const phone=event.target.closest("[data-phone]");if(!phone)return;
+      const nav=event.target.closest("[data-screen]");if(nav){changeScreen(phone,nav.dataset.screen);return;}
+      const action=event.target.closest("[data-action]");
+      if(action){
+        if(action.dataset.action==="call")changeScreen(phone,"call");
+        if(action.dataset.action==="end-call")changeScreen(phone,"result");
+        if(action.dataset.action==="save-result"){changeScreen(phone,"lead");showToast(phone,"Resultado guardado. Próximo cliente atribuído.");}
+      }
+      const result=event.target.closest("[data-result]");
+      if(result){
+        phone.querySelectorAll("[data-result]").forEach(x=>x.classList.remove("selected"));result.classList.add("selected");
+        phone.querySelector(".schedule").classList.toggle("show",result.dataset.result==="retorno");
+      }
+    });
+  </script>
+</body>
+</html>

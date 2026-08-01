@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>白名单电销系统｜第一套完整原型</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{--ink:#17211e;--muted:#66716d;--line:#d8dfda;--paper:#f5f7f3;--card:#fff;--green:#164f3b;--mint:#dff3e8;--orange:#f1a23b}
+    html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink)}
+    body{font-family:"Avenir Next","Noto Sans SC","PingFang SC",sans-serif}
+    .page{max-width:1500px;margin:0 auto;padding:44px}
+    header{display:flex;justify-content:space-between;align-items:flex-end;gap:36px;padding-bottom:30px;border-bottom:1px solid var(--line)}
+    .eyebrow{font-size:12px;letter-spacing:.15em;color:#718079;text-transform:uppercase;margin-bottom:12px}
+    h1{font-family:"Iowan Old Style","Songti SC",serif;font-size:48px;line-height:1.08;letter-spacing:-.035em;margin:0}
+    .intro{max-width:560px;color:var(--muted);font-size:15px;line-height:1.75;margin:0}
+    .status{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:8px 12px;border-radius:99px;background:var(--mint);color:var(--green);font-size:12px;font-weight:700}
+    .status:before{content:"";width:8px;height:8px;border-radius:50%;background:#24a46b}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+    .card{background:var(--card);border:1px solid var(--line);box-shadow:0 18px 54px rgba(26,45,37,.08);overflow:hidden}
+    .preview{position:relative;height:520px;background:#e8ece8;overflow:hidden;border-bottom:1px solid var(--line)}
+    .preview iframe{position:absolute;border:0;transform-origin:top left;pointer-events:none}
+    .app iframe{width:1400px;height:1050px;left:50%;transform:translateX(-50%) scale(.5);transform-origin:top center}
+    .web iframe{width:1440px;height:900px;left:0;top:0}
+    .meta{padding:22px 24px 25px}
+    .kicker{font-size:11px;letter-spacing:.12em;color:#87918d;text-transform:uppercase}
+    .title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:7px 0 8px}
+    h2{font-size:22px;margin:0}
+    .lang{font-size:11px;color:var(--green);background:var(--mint);padding:6px 9px;border-radius:99px;white-space:nowrap}
+    .desc{font-size:13px;line-height:1.65;color:var(--muted);min-height:84px}
+    .open{display:inline-flex;margin-top:15px;padding:11px 16px;background:var(--green);color:#fff;text-decoration:none;font-size:13px;font-weight:700;border-radius:8px}
+    .open.alt{margin-left:7px;background:#fff;color:var(--green);border:1px solid var(--green)}
+    .logic{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:24px}
+    .logic-item{background:#fff;border:1px solid var(--line);padding:14px 15px}
+    .logic-item b{display:block;font-size:12px;margin-bottom:5px}
+    .logic-item span{font-size:11px;line-height:1.45;color:var(--muted)}
+    footer{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:25px;color:#747e79;font-size:12px}
+    footer a{color:var(--green);text-decoration:none;border-bottom:1px solid currentColor}
+    @media(max-width:1000px){
+      .page{padding:24px} header{display:block} .intro{margin-top:18px}.cards{grid-template-columns:1fr}.logic{grid-template-columns:1fr 1fr}.preview{height:480px}h1{font-size:38px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <div class="eyebrow">Direction 01 · Clear operations</div>
+        <h1>白名单电销系统<br>第一套完整交互原型</h1>
+        <div class="status">双端原型已就绪</div>
+      </div>
+      <p class="intro">这是一套面向白名单客户转化的三端电销系统，不包含催收。安哥拉坐席使用 App，孟加拉坐席使用桌面 Web；统一后管跨市场管理名单、自动分配、释放、调配与完整审计。</p>
+    </header>
+
+    <section class="cards">
+      <article class="card app">
+        <div class="preview"><iframe src="angola-app.html" title="安哥拉坐席 App"></iframe></div>
+        <div class="meta">
+          <div class="kicker">Agent application · Angola</div>
+          <div class="title-row"><h2>安哥拉坐席 App</h2><span class="lang">Português · pt-AO</span></div>
+          <div class="desc">15 个完整页面覆盖登录、自动派单、客户详情、拨号录音、结果登记、回拨、生命周期、任务、消息、话术、产品、业绩、质检与设置。坐席不能浏览或挑选客户。</div>
+          <a class="open" href="angola-app.html">葡语业务版</a><a class="open alt" href="angola-app-zh.html">中文讲解版</a>
+        </div>
+      </article>
+
+      <article class="card web">
+        <div class="preview"><iframe src="bangladesh-web.html" title="孟加拉电销坐席 Web"></iframe></div>
+        <div class="meta">
+          <div class="kicker">Agent desk · Bangladesh</div>
+          <div class="title-row"><h2>孟加拉坐席 Web</h2><span class="lang">বাংলা · Bengali</span></div>
+          <div class="desc">7 个核心页面覆盖登录班次、自动派发、客户上下文、桌面呼叫、强制结果登记、回拨与个人绩效；坐席不能看池、挑单或直接调配。</div>
+          <a class="open" href="bangladesh-web.html">孟加拉语业务版</a><a class="open alt" href="bangladesh-web-zh.html">中文讲解版</a>
+        </div>
+      </article>
+
+      <article class="card web">
+        <div class="preview"><iframe src="unified-admin.html" title="跨市场统一后管"></iframe></div>
+        <div class="meta">
+          <div class="kicker">Control center · Global</div>
+          <div class="title-row"><h2>跨市场统一后管</h2><span class="lang">中文 · Global</span></div>
+          <div class="desc">10 个页面覆盖全球总览、上传批次、案件池、实时监控、释放、批量调配、规则、团队容量和审计；正常调配严格限制在同一市场。</div>
+          <a class="open" href="unified-admin.html">打开统一后管</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="logic" aria-label="核心业务规则">
+      <div class="logic-item"><b>名单进入</b><span>白名单与产品均由运营手动上传</span></div>
+      <div class="logic-item"><b>产品推广</b><span>每个批次必须指定需要推广的产品</span></div>
+      <div class="logic-item"><b>自动分配</b><span>按团队、产能和客户保护规则分配</span></div>
+      <div class="logic-item"><b>禁止挑选</b><span>坐席只处理系统派发的下一条任务</span></div>
+      <div class="logic-item"><b>结果闭环</b><span>录音、结果、回拨与全生命周期转化留痕</span></div>
+    </section>
+
+    <footer>
+      <span>原型数据为演示数据，用于流程和交互评审。</span>
+      <span><a href="../白名单电销系统_PRD_v1.0.md">查看完整需求</a> · <a href="../index.html">返回设计方向</a></span>
+    </footer>
+  </main>
+  <script>
+    function fitWeb(){
+      var box=document.querySelector('.web .preview');
+      var frame=box.querySelector('iframe');
+      var scale=Math.min(box.clientWidth/1440,box.clientHeight/900);
+      frame.style.transform='scale('+scale+')';
+    }
+    addEventListener('load',fitWeb);
+    addEventListener('resize',fitWeb);
+  </script>
+</body>
+</html>
