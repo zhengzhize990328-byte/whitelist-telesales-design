@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<!--
+ASSUMPTIONS
+1. This is a white-list loan sales conversion system, never a collection product.
+2. The Angola Android app is pt-AO; the Bangladesh operations console is bn-BD with an English switch.
+3. No brand assets exist, so the visual identity is intentionally neutral and operational: mineral blue, signal green, warm white.
+4. Preview data is illustrative and only demonstrates hierarchy, allocation state, and conversion flow.
+
+REASONING
+Direction A is an "operations ledger": bright, dense, and highly ordered. A shared blue action color and square status language
+make the mobile next-call workflow and desktop allocation console feel like one system. The phone concentrates one customer,
+one recommended product, and one dominant call action. The web view exposes allocation health before decorative KPI reporting:
+pool capacity, agent routing, distribution progress, and a compact stage table. Shapes are restrained, shadows are shallow, and
+all visualized numbers are attached to an actual operational decision.
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1600, initial-scale=1.0" />
+  <title>Direção A — White-list Telesales Operations</title>
+  <style>
+    :root{
+      --ink:#15233B;
+      --muted:#68758A;
+      --line:#DDE4ED;
+      --soft-line:#E9EEF4;
+      --paper:#FFFFFF;
+      --canvas:#EEF2F6;
+      --panel:#F7F9FB;
+      --blue:#1E5EFF;
+      --blue-dark:#1648C8;
+      --blue-pale:#EAF0FF;
+      --green:#18845B;
+      --green-pale:#E6F5EE;
+      --amber:#A86200;
+      --amber-pale:#FFF2D8;
+      --red:#B94A48;
+      --red-pale:#FDECEC;
+      --nav:#12213A;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#D8DEE6}
+    body{
+      font-family:"Avenir Next","Noto Sans Bengali","Noto Sans",Segoe UI,sans-serif;
+      color:var(--ink);
+      display:grid;
+      place-items:center;
+    }
+    button{font:inherit}
+    .canvas{
+      width:1600px;
+      height:1000px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(90deg,rgba(20,41,70,.035) 1px,transparent 1px) 0 0/40px 40px,
+        var(--canvas);
+    }
+    .top-rule{position:absolute;top:0;left:0;right:0;height:7px;background:var(--nav)}
+    .heading{
+      position:absolute;left:58px;right:58px;top:31px;height:58px;
+      display:flex;align-items:flex-start;justify-content:space-between;
+    }
+    .eyebrow{
+      display:flex;align-items:center;gap:10px;
+      font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);
+    }
+    .eyebrow::before{content:"";width:24px;height:3px;background:var(--blue)}
+    h1{font-size:23px;line-height:1.2;letter-spacing:-.02em;margin:7px 0 0;font-weight:750}
+    .direction-meta{text-align:right;font-size:11px;color:var(--muted);line-height:1.55}
+    .direction-meta strong{color:var(--ink);font-size:13px;display:block}
+    .label{
+      position:absolute;top:100px;
+      display:flex;align-items:center;gap:9px;
+      font-size:11px;color:#536175;font-weight:750;letter-spacing:.08em;text-transform:uppercase;
+    }
+    .label .index{width:23px;height:23px;display:grid;place-items:center;background:var(--ink);color:white;font-size:10px}
+    .label-app{left:108px}
+    .label-web{left:594px}
+
+    /* Exact AndroidFrame specifications translated from android_frame.jsx */
+    .android-frame{
+      position:absolute;left:88px;top:130px;
+      display:inline-block;padding:10px;background:#1A1A1A;border-radius:44px;
+      box-shadow:0 0 0 2px #2A2A2A,0 20px 60px rgba(0,0,0,.30);
+      transform:scale(.9);transform-origin:top left;
+    }
+    .android-screen{
+      position:relative;width:412px;height:892px;border-radius:36px;overflow:hidden;background:#FFF;
+    }
+    .status-bar{
+      position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;font-size:14px;font-weight:500;font-family:Roboto,-apple-system,sans-serif;z-index:20;pointer-events:none;color:#1A1A1A;
+    }
+    .punch-hole{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:14px;height:14px;background:#000;border-radius:50%;z-index:30}
+    .status-icons{display:flex;align-items:center;gap:6px}
+    .battery{width:22px;height:10px;border:1.5px solid currentColor;border-radius:2px;padding:1px;position:relative}
+    .battery-fill{width:84%;height:100%;background:currentColor;border-radius:1px}
+    .battery-text{font-size:11px;font-weight:600;margin-left:2px}
+    .phone-content{position:absolute;top:32px;left:0;right:0;bottom:24px;overflow:hidden;background:#F5F7FA}
+    .nav-bar{position:absolute;bottom:0;left:0;right:0;height:24px;display:flex;align-items:center;justify-content:center;gap:60px;z-index:10}
+    .nav-button{width:100px;height:4px;background:rgba(0,0,0,.4);border-radius:999px}
+
+    .mobile-top{
+      height:68px;background:#fff;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;padding:0 20px;justify-content:space-between;
+    }
+    .m-brand{display:flex;align-items:center;gap:10px}
+    .brand-mark{width:28px;height:28px;background:var(--blue);position:relative;border-radius:7px}
+    .brand-mark::before{content:"";position:absolute;width:10px;height:3px;background:white;left:5px;top:8px;box-shadow:0 5px 0 white}
+    .brand-mark::after{content:"";position:absolute;width:4px;height:13px;background:white;right:6px;top:7px}
+    .m-brand strong{display:block;font-size:14px;letter-spacing:-.02em}
+    .m-brand small{display:block;font-size:10px;color:var(--muted);margin-top:1px}
+    .sync{display:flex;align-items:center;gap:6px;color:var(--green);font-size:10px;font-weight:700}
+    .sync-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 0 3px var(--green-pale)}
+    .mobile-scroll{height:768px;overflow:hidden;padding:17px 18px 114px}
+    .workline{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:13px}
+    .workline small{display:block;font-size:10px;color:var(--muted);font-weight:650}
+    .workline strong{display:block;margin-top:3px;font-size:18px;letter-spacing:-.04em}
+    .queue-counter{font-size:11px;color:var(--muted)}
+    .queue-counter b{color:var(--ink)}
+    .progress{height:4px;background:#DCE3EB;margin-bottom:14px;overflow:hidden}
+    .progress span{display:block;height:100%;width:43%;background:var(--blue)}
+    .client-card{background:#fff;border:1px solid #D9E1EA;box-shadow:0 4px 18px rgba(35,53,78,.08)}
+    .client-head{padding:16px 16px 13px;border-bottom:1px solid var(--soft-line)}
+    .client-kicker{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+    .tag{font-size:9px;line-height:20px;height:20px;padding:0 7px;background:var(--blue-pale);color:var(--blue-dark);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .fresh{font-size:10px;color:var(--green);font-weight:750}
+    .person{display:flex;align-items:center;gap:11px}
+    .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#DDE6F8;color:#244C88;font-size:14px;font-weight:800}
+    .person h2{font-size:18px;margin:0;letter-spacing:-.025em}
+    .person p{font-size:10px;color:var(--muted);margin:4px 0 0}
+    .score{margin-left:auto;text-align:right}
+    .score strong{font-size:17px;color:var(--blue);display:block}
+    .score small{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .facts{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--soft-line)}
+    .fact{padding:12px 15px;border-right:1px solid var(--soft-line)}
+    .fact:last-child{border-right:0}
+    .fact small{display:block;font-size:9px;color:var(--muted);margin-bottom:4px}
+    .fact strong{font-size:12px}
+    .recommend{padding:14px 15px 13px}
+    .recommend-title{font-size:9px;color:var(--muted);font-weight:750;letter-spacing:.07em;text-transform:uppercase}
+    .product-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .product-row b{font-size:13px}
+    .product-row span{font-size:11px;font-weight:750;color:var(--green)}
+    .product-note{margin-top:7px;font-size:10px;line-height:1.45;color:#5D6A7C;background:var(--panel);padding:8px 9px}
+    .script{margin-top:12px;background:#fff;border:1px solid var(--line)}
+    .script-title{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-bottom:1px solid var(--soft-line)}
+    .script-title strong{font-size:11px}
+    .script-title span{font-size:9px;color:var(--blue);font-weight:800}
+    .script p{font-size:11px;line-height:1.55;margin:0;padding:11px 13px;color:#445268}
+    .next-follow{margin-top:10px;padding:11px 13px;background:var(--amber-pale);display:flex;justify-content:space-between;align-items:center}
+    .next-follow small{font-size:9px;color:var(--amber);display:block}
+    .next-follow b{font-size:11px}
+    .mobile-action{
+      position:absolute;left:0;right:0;bottom:0;height:108px;background:rgba(255,255,255,.97);
+      border-top:1px solid var(--line);padding:13px 18px;z-index:5;
+    }
+    .call-btn{
+      height:52px;width:100%;border:0;background:var(--blue);color:white;
+      display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:14px;box-shadow:0 6px 14px rgba(30,94,255,.25);
+      cursor:pointer;transition:.15s ease;
+    }
+    .call-btn:hover{background:var(--blue-dark)}
+    .call-btn svg{width:17px;height:17px}
+    .sub-actions{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:9px;font-size:9px;color:var(--muted);font-weight:700}
+    .sub-actions span+span::before{content:"";display:inline-block;width:1px;height:10px;background:var(--line);margin:0 20px 0 0;vertical-align:middle}
+
+    /* Web console */
+    .web-shell{
+      position:absolute;left:574px;top:130px;width:968px;height:820px;
+      background:#fff;border:1px solid #CBD5E1;box-shadow:0 20px 55px rgba(26,43,67,.16);
+      display:grid;grid-template-columns:190px 1fr;grid-template-rows:58px 1fr;overflow:hidden;
+    }
+    .web-logo{grid-column:1;grid-row:1;background:var(--nav);display:flex;align-items:center;padding:0 18px;gap:10px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1)}
+    .web-logo .brand-mark{width:27px;height:27px}
+    .web-logo b{font-size:13px;letter-spacing:.01em}
+    .web-logo small{display:block;color:#9FB0C8;font-size:8px;margin-top:2px}
+    .web-header{grid-column:2;grid-row:1;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+    .crumb{font-size:11px;color:var(--muted)}
+    .crumb b{color:var(--ink)}
+    .header-tools{display:flex;align-items:center;gap:14px;font-size:10px;color:var(--muted)}
+    .lang{height:26px;padding:0 9px;border:1px solid var(--line);display:flex;align-items:center;gap:8px;background:#fff}
+    .operator{display:flex;align-items:center;gap:8px}
+    .operator .avatar{width:27px;height:27px;font-size:9px;background:#E6EBF1;color:#344156}
+    .sidebar{grid-column:1;grid-row:2;background:var(--nav);padding:12px 10px;color:#B9C5D5}
+    .nav-section{font-size:8px;color:#71839A;letter-spacing:.12em;text-transform:uppercase;padding:14px 10px 7px}
+    .nav-item{height:34px;display:flex;align-items:center;gap:10px;padding:0 10px;font-size:10px;font-weight:650;margin:2px 0;position:relative}
+    .nav-item svg{width:14px;height:14px;opacity:.75}
+    .nav-item.active{background:#1D3355;color:#fff}
+    .nav-item.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#4E7DFF}
+    .side-status{position:absolute;bottom:20px;left:16px;width:158px;border-top:1px solid #2B3C55;padding-top:13px}
+    .side-status small{font-size:8px;color:#71839A}
+    .side-status b{display:block;color:#C8D4E4;font-size:10px;margin-top:5px}
+    .side-status .mini-progress{height:3px;background:#293B55;margin-top:9px}
+    .side-status .mini-progress span{display:block;width:72%;height:100%;background:#59C49B}
+    .main{grid-column:2;grid-row:2;background:#F4F6F9;padding:19px 20px 17px;overflow:hidden}
+    .main-title{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+    .main-title h2{font-size:19px;line-height:1.2;margin:0 0 4px;letter-spacing:-.025em}
+    .main-title p{font-size:9px;color:var(--muted);margin:0}
+    .refresh{border:1px solid var(--line);height:29px;padding:0 10px;background:#fff;color:#40506A;font-size:9px;font-weight:700;cursor:pointer}
+    .refresh:hover{border-color:var(--blue);color:var(--blue)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:#fff;margin-bottom:13px}
+    .stat{height:80px;padding:13px 14px;border-right:1px solid var(--line);position:relative}
+    .stat:last-child{border-right:0}
+    .stat-label{font-size:9px;color:var(--muted);font-weight:650}
+    .stat-value{font-size:22px;font-weight:750;letter-spacing:-.04em;margin-top:6px}
+    .delta{font-size:8px;color:var(--green);position:absolute;right:11px;bottom:13px;font-weight:750}
+    .delta.warn{color:var(--amber)}
+    .operations-grid{display:grid;grid-template-columns:1.14fr .86fr;gap:13px;margin-bottom:13px}
+    .panel{background:#fff;border:1px solid var(--line)}
+    .panel-head{height:44px;padding:0 13px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+    .panel-head strong{font-size:11px}
+    .panel-head small{font-size:8px;color:var(--muted)}
+    .panel-head a{font-size:8px;color:var(--blue);font-weight:750;text-decoration:none}
+    .allocation{height:225px}
+    .alloc-body{padding:12px 13px}
+    .engine-row{display:grid;grid-template-columns:54px 1fr 52px;align-items:center;gap:8px;margin-bottom:10px}
+    .engine-row label{font-size:8px;color:var(--muted)}
+    .bar{height:7px;background:#EDF1F5;overflow:hidden}
+    .bar span{height:100%;display:block;background:var(--blue)}
+    .bar.green span{background:var(--green)}
+    .bar.amber span{background:#D28A24}
+    .engine-row b{text-align:right;font-size:9px}
+    .engine-info{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--soft-line);margin-top:12px;padding-top:11px}
+    .engine-info div{padding-left:10px;border-left:2px solid #D8E0EA}
+    .engine-info div:first-child{padding-left:0;border-left:0}
+    .engine-info small{display:block;font-size:8px;color:var(--muted)}
+    .engine-info b{display:block;font-size:12px;margin-top:4px}
+    .routing-note{margin-top:11px;background:var(--blue-pale);color:#34578F;padding:8px 9px;font-size:8px;line-height:1.45}
+    .agents{height:225px}
+    .agent-list{padding:5px 12px}
+    .agent-row{height:38px;display:grid;grid-template-columns:1fr 55px 42px;align-items:center;border-bottom:1px solid var(--soft-line)}
+    .agent-row:last-child{border-bottom:0}
+    .agent-person{display:flex;align-items:center;gap:7px}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+    .status-dot.busy{background:#E09A2C}
+    .agent-person b{font-size:9px;display:block}
+    .agent-person small{font-size:7px;color:var(--muted);display:block;margin-top:2px}
+    .capacity{font-size:8px;color:var(--muted)}
+    .capacity b{color:var(--ink)}
+    .rate{text-align:right;font-size:9px;color:var(--green);font-weight:750}
+    .funnel{height:228px}
+    .table-head,.table-row{display:grid;grid-template-columns:1.45fr .7fr .8fr .75fr .7fr;align-items:center;padding:0 13px}
+    .table-head{height:31px;background:#F8FAFC;color:var(--muted);font-size:8px;font-weight:700;border-bottom:1px solid var(--line)}
+    .table-row{height:31px;border-bottom:1px solid var(--soft-line);font-size:8px}
+    .table-row:last-child{border-bottom:0}
+    .table-row strong{font-size:8px}
+    .status-pill{justify-self:start;padding:3px 6px;font-size:7px;font-weight:750;background:var(--green-pale);color:var(--green)}
+    .status-pill.blue{background:var(--blue-pale);color:var(--blue-dark)}
+    .status-pill.amber{background:var(--amber-pale);color:var(--amber)}
+    .status-pill.gray{background:#EEF1F5;color:#6A7688}
+    .canvas-footer{
+      position:absolute;left:574px;bottom:19px;width:968px;display:flex;align-items:center;justify-content:space-between;
+      font-size:9px;color:#657286;
+    }
+    .tokens{display:flex;gap:15px;align-items:center}
+    .token{display:flex;align-items:center;gap:5px}
+    .token i{width:8px;height:8px;display:block;background:var(--blue)}
+    .token:nth-child(2) i{background:var(--green)}
+    .token:nth-child(3) i{background:#fff;border:1px solid #BCC7D4}
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <div class="top-rule"></div>
+    <header class="heading">
+      <div>
+        <div class="eyebrow">Direction A · Operational Ledger</div>
+        <h1>白名单销售转化｜移动外呼与后台分配协同</h1>
+      </div>
+      <div class="direction-meta">
+        <strong>Bright · Dense · Ordered</strong>
+        Angola App / Bangladesh Operations
+      </div>
+    </header>
+
+    <div class="label label-app"><span class="index">01</span> Android · Próximo cliente</div>
+    <div class="label label-web"><span class="index">02</span> Web · অপারেশন ও বণ্টন</div>
+
+    <section class="android-frame" aria-label="Android app preview">
+      <div class="android-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor" aria-hidden="true">
+              <rect x="0" y="6" width="2" height="4" rx=".5"/><rect x="4" y="4" width="2" height="6" rx=".5"/>
+              <rect x="8" y="2" width="2" height="8" rx=".5"/><rect x="12" y="0" width="2" height="10" rx=".5"/>
+            </svg>
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+              <path d="M7 9a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/>
+              <path d="M3 6a5 5 0 018 0" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M.5 3.5a11 11 0 0113 0" stroke="currentColor" stroke-width="1.2" opacity=".6"/>
+            </svg>
+            <div class="battery"><div class="battery-fill"></div></div><span class="battery-text">84%</span>
+          </div>
+        </div>
+        <div class="punch-hole"></div>
+
+        <div class="phone-content">
+          <div class="mobile-top">
+            <div class="m-brand"><span class="brand-mark"></span><span><strong>Linha Clara</strong><small>Vendas assistidas</small></span></div>
+            <div class="sync"><span class="sync-dot"></span> Sincronizado</div>
+          </div>
+          <div class="mobile-scroll">
+            <div class="workline">
+              <div><small>MINHA FILA · HOJE</small><strong>Próximo cliente</strong></div>
+              <div class="queue-counter"><b>12</b> de 28</div>
+            </div>
+            <div class="progress"><span></span></div>
+
+            <article class="client-card">
+              <div class="client-head">
+                <div class="client-kicker"><span class="tag">Primeiro contacto</span><span class="fresh">Lista nova · 18 min</span></div>
+                <div class="person">
+                  <div class="avatar">JM</div>
+                  <div><h2>Joana Manuel</h2><p>Luanda · Português · Campanha Julho</p></div>
+                  <div class="score"><strong>86</strong><small>prioridade</small></div>
+                </div>
+              </div>
+              <div class="facts">
+                <div class="fact"><small>Produto elegível</small><strong>Crédito Flex</strong></div>
+                <div class="fact"><small>Valor pré-avaliado</small><strong>120.000 Kz</strong></div>
+              </div>
+              <div class="recommend">
+                <div class="recommend-title">Melhor argumento</div>
+                <div class="product-row"><b>Pedido simples no telemóvel</b><span>Alta afinidade</span></div>
+                <div class="product-note">Cliente pré-selecionada. Confirmar rendimento e explicar os passos antes de iniciar o pedido.</div>
+              </div>
+            </article>
+
+            <section class="script">
+              <div class="script-title"><strong>Guia de abertura</strong><span>VER COMPLETO</span></div>
+              <p>“Bom dia, Joana. Falo da Linha Clara. Temos uma opção de crédito pré-selecionada para si. Posso explicar em dois minutos?”</p>
+            </section>
+
+            <div class="next-follow">
+              <div><small>JANELA RECOMENDADA</small><b>Agora · melhor taxa de contacto</b></div>
+              <b>09:42</b>
+            </div>
+          </div>
+          <div class="mobile-action">
+            <button class="call-btn" id="callButton">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.2 3.5l3 4.5-2.3 2.2c1.4 2.8 3.1 4.5 5.9 5.9l2.2-2.3 4.5 3c-.6 2.5-2.1 3.7-4.1 3.7C10.2 20.5 3.5 13.8 3.5 7.6c0-2 1.2-3.5 3.7-4.1z" fill="currentColor"/></svg>
+              <span>Ligar agora</span>
+            </button>
+            <div class="sub-actions"><span>Adiar contacto</span><span>Ver histórico</span></div>
+          </div>
+        </div>
+        <div class="nav-bar"><div class="nav-button"></div></div>
+      </div>
+    </section>
+
+    <section class="web-shell" aria-label="Bangladesh web operations preview">
+      <div class="web-logo">
+        <span class="brand-mark"></span>
+        <span><b>Linha Clara Ops</b><small>WHITELIST SALES</small></span>
+      </div>
+      <header class="web-header">
+        <div class="crumb">অপারেশন / <b>ওভারভিউ</b></div>
+        <div class="header-tools">
+          <span>শেষ আপডেট 09:41:18</span>
+          <div class="lang">বাংলা <span>⌄</span></div>
+          <div class="operator"><div class="avatar">RA</div><span>রাফি আহমেদ</span></div>
+        </div>
+      </header>
+      <aside class="sidebar">
+        <div class="nav-section">পরিচালনা</div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9zm0 7h6v-4H4v4zm10 0h6v-9h-6v9zm0-12h6V4h-6v4z" fill="currentColor"/></svg>
+          অপারেশন ওভারভিউ
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8"/></svg>
+          হোয়াইটলিস্ট পুল
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6" stroke="currentColor" stroke-width="1.8"/></svg>
+          বণ্টন নীতি
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 19c.4-4 2.1-6 5.5-6s5.1 2 5.5 6M16 8h5M18.5 5.5v5" stroke="currentColor" stroke-width="1.8"/></svg>
+          এজেন্ট ও দল
+        </div>
+        <div class="nav-section">বিশ্লেষণ</div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 19V9m7 10V4m7 15v-6" stroke="currentColor" stroke-width="2"/></svg>
+          রূপান্তর ফানেল
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.8"/></svg>
+          টাস্ক মনিটর
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 4h10v16H7zM10 8h4M10 12h4M10 16h3" stroke="currentColor" stroke-width="1.8"/></svg>
+          গুণমান ও অডিট
+        </div>
+        <div class="side-status"><small>সিস্টেম ক্ষমতা</small><b>72% · স্বাভাবিক লোড</b><div class="mini-progress"><span></span></div></div>
+      </aside>
+
+      <div class="main">
+        <div class="main-title">
+          <div><h2>অপারেশন ওভারভিউ</h2><p>অ্যাঙ্গোলা · আজকের হোয়াইটলিস্ট বিক্রয় কার্যক্রম</p></div>
+          <button class="refresh" id="refreshButton">ডেটা রিফ্রেশ</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">আজকের নতুন তালিকা</div><div class="stat-value">3,842</div><span class="delta">+12.4%</span></div>
+          <div class="stat"><div class="stat-label">বণ্টিত গ্রাহক</div><div class="stat-value">3,116</div><span class="delta">81.1%</span></div>
+          <div class="stat"><div class="stat-label">সক্রিয় এজেন্ট</div><div class="stat-value">64 / 72</div><span class="delta warn">8 বিরতিতে</span></div>
+          <div class="stat"><div class="stat-label">আবেদন শুরু</div><div class="stat-value">428</div><span class="delta">13.7% হার</span></div>
+        </div>
+
+        <div class="operations-grid">
+          <section class="panel allocation">
+            <div class="panel-head"><div><strong>লাইভ বণ্টন অবস্থা</strong><br><small>স্বয়ংক্রিয় রাউটিং · প্রতি 30 সেকেন্ড</small></div><a href="#">নীতি দেখুন</a></div>
+            <div class="alloc-body">
+              <div class="engine-row"><label>যোগ্য</label><div class="bar"><span style="width:86%"></span></div><b>3,521</b></div>
+              <div class="engine-row"><label>বণ্টিত</label><div class="bar green"><span style="width:76%"></span></div><b>3,116</b></div>
+              <div class="engine-row"><label>অপেক্ষমাণ</label><div class="bar amber"><span style="width:18%"></span></div><b>405</b></div>
+              <div class="engine-info">
+                <div><small>গড় অপেক্ষা</small><b>02:18</b></div>
+                <div><small>সুরক্ষিত গ্রাহক</small><b>612</b></div>
+                <div><small>আজ পুনর্বণ্টন</small><b>94</b></div>
+              </div>
+              <div class="routing-note">রাউটিং স্বাভাবিক: ভাষা + পণ্য + শিফট মিলিয়ে, তারপর ধারণক্ষমতা ও ন্যায্যতা অনুযায়ী বণ্টন।</div>
+            </div>
+          </section>
+          <section class="panel agents">
+            <div class="panel-head"><div><strong>এজেন্ট ধারণক্ষমতা</strong><br><small>শীর্ষ সক্রিয় দল · Luanda A</small></div><a href="#">সব দল</a></div>
+            <div class="agent-list">
+              <div class="agent-row"><div class="agent-person"><span class="status-dot"></span><span><b>Ana Pedro</b><small>Português · Flex</small></span></div><div class="capacity"><b>18</b> / 24</div><div class="rate">19.2%</div></div>
+              <div class="agent-row"><div class="agent-person"><span class="status-dot"></span><span><b>Manuel José</b><small>Português · Start</small></span></div><div class="capacity"><b>21</b> / 24</div><div class="rate">17.8%</div></div>
+              <div class="agent-row"><div class="agent-person"><span class="status-dot busy"></span><span><b>Beatriz João</b><small>ফলো-আপ কল</small></span></div><div class="capacity"><b>24</b> / 24</div><div class="rate">20.1%</div></div>
+              <div class="agent-row"><div class="agent-person"><span class="status-dot"></span><span><b>Paulo Mateus</b><small>Português · Flex</small></span></div><div class="capacity"><b>15</b> / 24</div><div class="rate">16.4%</div></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel funnel">
+          <div class="panel-head"><div><strong>আজকের রূপান্তর প্রবাহ</strong><br><small>বণ্টন থেকে আবেদন পর্যন্ত অপারেশনাল ধাপ</small></div><a href="#">সম্পূর্ণ ফানেল</a></div>
+          <div class="table-head"><span>পর্যায়</span><span>গ্রাহক</span><span>পূর্ব ধাপ থেকে</span><span>গড় সময়</span><span>অবস্থা</span></div>
+          <div class="table-row"><strong>বণ্টিত</strong><span>3,116</span><span>81.1%</span><span>02:18</span><span class="status-pill blue">চলমান</span></div>
+          <div class="table-row"><strong>যোগাযোগ হয়েছে</strong><span>1,874</span><span>60.1%</span><span>04:42</span><span class="status-pill">স্বাভাবিক</span></div>
+          <div class="table-row"><strong>আগ্রহী</strong><span>706</span><span>37.7%</span><span>06:15</span><span class="status-pill">লক্ষ্যে</span></div>
+          <div class="table-row"><strong>আবেদন শুরু</strong><span>428</span><span>60.6%</span><span>09:48</span><span class="status-pill amber">নজর দিন</span></div>
+          <div class="table-row"><strong>আবেদন জমা</strong><span>291</span><span>68.0%</span><span>14:22</span><span class="status-pill gray">প্রসেসিং</span></div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="canvas-footer">
+      <span>A · 规模化运营秩序 / 高密度但可扫描 / 明亮可信</span>
+      <div class="tokens"><span class="token"><i></i>行动</span><span class="token"><i></i>健康</span><span class="token"><i></i>结构</span></div>
+    </footer>
+  </main>
+  <script>
+    const callButton = document.getElementById('callButton');
+    callButton.addEventListener('click', () => {
+      const active = callButton.dataset.active === 'true';
+      callButton.dataset.active = active ? 'false' : 'true';
+      callButton.querySelector('span').textContent = active ? 'Ligar agora' : 'Chamada em curso · 00:01';
+      callButton.style.background = active ? 'var(--blue)' : 'var(--green)';
+    });
+    const refreshButton = document.getElementById('refreshButton');
+    refreshButton.addEventListener('click', () => {
+      refreshButton.textContent = 'আপডেট হয়েছে · এখন';
+      refreshButton.style.color = 'var(--green)';
+      refreshButton.style.borderColor = '#94CDB6';
+    });
+  </script>
+</body>
+</html>

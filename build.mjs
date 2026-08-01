@@ -3,18 +3,45 @@ import path from "node:path";
 
 const root = process.cwd();
 const dist = path.join(root, "dist");
+const docs = path.join(root, "docs");
 const serverDir = path.join(dist, "server");
 const hostingDir = path.join(dist, ".openai");
 
 fs.rmSync(dist, { recursive: true, force: true });
+fs.rmSync(docs, { recursive: true, force: true });
 fs.mkdirSync(serverDir, { recursive: true });
 fs.mkdirSync(hostingDir, { recursive: true });
+fs.mkdirSync(path.join(docs, "directions"), { recursive: true });
 
 const readText = relativePath => fs.readFileSync(path.join(root, relativePath), "utf8");
 const hub = readText("prototype/index.html")
   .replace('href="../index.html"', 'href="/directions/"')
   .replace('href="../白名单电销系统_PRD_v1.0.md"', 'href="/白名单电销系统_PRD_v1.0.md"');
 const chooser = readText("index.html").replace('href="prototype/index.html"', 'href="/"');
+const pagesHub = readText("prototype/index.html")
+  .replace('href="../index.html"', 'href="directions/index.html"')
+  .replace('href="../白名单电销系统_PRD_v1.0.md"', 'href="白名单电销系统_PRD_v1.0.md"');
+const pagesChooser = readText("index.html").replace('href="prototype/index.html"', 'href="../index.html"');
+
+const writeDoc = (relativePath, body) => {
+  const output = path.join(docs, relativePath);
+  fs.mkdirSync(path.dirname(output), { recursive: true });
+  fs.writeFileSync(output, body);
+};
+
+writeDoc("index.html", pagesHub);
+writeDoc("angola-app.html", readText("prototype/angola-app.html"));
+writeDoc("angola-app-zh.html", readText("prototype/angola-app.html"));
+writeDoc("bangladesh-web.html", readText("prototype/bangladesh-web.html"));
+writeDoc("bangladesh-web-zh.html", readText("prototype/bangladesh-web-zh.html"));
+writeDoc("unified-admin.html", readText("prototype/unified-admin.html"));
+writeDoc("白名单电销系统_PRD_v1.0.md", readText("白名单电销系统_PRD_v1.0.md"));
+writeDoc("directions/index.html", pagesChooser);
+for (const name of ["direction-a", "direction-b", "direction-c"]) {
+  writeDoc(`directions/${name}.html`, readText(`${name}.html`));
+  fs.copyFileSync(path.join(root, `${name}.png`), path.join(docs, "directions", `${name}.png`));
+}
+writeDoc(".nojekyll", "");
 
 const siteFiles = {
   "/": { body: hub, contentType: "text/html; charset=utf-8" },

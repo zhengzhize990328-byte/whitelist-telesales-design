@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>白名单电销系统｜设计方向</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#eeede8;color:#191a18}
+    body{font-family:"Avenir Next","Noto Sans SC","PingFang SC",sans-serif}
+    .page{max-width:1680px;margin:0 auto;padding:48px}
+    header{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end;margin-bottom:40px}
+    .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#66685f;margin-bottom:16px}
+    h1{font-family:"Iowan Old Style","Songti SC",serif;font-size:54px;line-height:1.03;font-weight:600;letter-spacing:-.035em;margin:0;max-width:760px}
+    .intro{font-size:16px;line-height:1.8;color:#55584f;margin:0;max-width:600px}
+    .logic{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+    .logic span{border:1px solid #c9c9c1;border-radius:99px;padding:7px 12px;font-size:12px;color:#4c4e47;background:#f6f5f1}
+    .selected{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 26px;padding:18px 20px;background:#173f32;color:#fff;box-shadow:0 16px 38px rgba(23,63,50,.16)}
+    .selected b{display:block;font-size:15px;margin-bottom:4px}
+    .selected span{font-size:12px;color:#cfe1d9}
+    .selected a{flex:none;color:#173f32;background:#dff1e8;text-decoration:none;font-size:13px;font-weight:800;padding:11px 16px;border-radius:6px}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+    .card{background:#f8f7f3;border:1px solid #cfcec7;box-shadow:0 18px 48px rgba(39,40,34,.07);transition:transform .2s ease,box-shadow .2s ease}
+    .card:hover{transform:translateY(-3px);box-shadow:0 24px 60px rgba(39,40,34,.11)}
+    .preview{position:relative;aspect-ratio:16/10;overflow:hidden;background:#fff;border-bottom:1px solid #d9d8d1}
+    iframe{position:absolute;inset:0;width:1600px;height:1000px;border:0;transform-origin:top left;pointer-events:none}
+    .meta{padding:18px 20px 20px}
+    .row{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+    .num{font-size:11px;letter-spacing:.12em;color:#888a82}
+    h2{font-size:18px;margin:6px 0 7px}
+    .desc{font-size:13px;line-height:1.55;color:#66685f;min-height:41px}
+    .open{display:inline-flex;margin-top:14px;color:#1b4d3e;text-decoration:none;font-size:13px;font-weight:700;border-bottom:1px solid currentColor;padding-bottom:2px}
+    .foot{display:flex;justify-content:space-between;gap:24px;margin-top:28px;padding-top:20px;border-top:1px solid #cfcec7;color:#6f716a;font-size:12px}
+    @media(max-width:1100px){header{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.preview{aspect-ratio:16/10}h1{font-size:42px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <div class="eyebrow">Whitelist telesales · design directions</div>
+        <h1>白名单电销系统<br>双端设计方向</h1>
+      </div>
+      <div>
+        <p class="intro">安哥拉 Android App 使用葡萄牙语，服务一线坐席快速处理下一位白名单客户；孟加拉 Web 使用 বাংলা，服务运营团队配置分配规则、监控坐席与转化。</p>
+        <div class="logic">
+          <span>准入过滤</span><span>意向评分</span><span>技能匹配</span><span>负载均衡</span><span>客户保护</span><span>成交归因</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="selected">
+      <div><b>第一套「清晰运营」已扩展为完整双端交互原型</b><span>包含安哥拉葡语 App、孟加拉语 Web、自动分配与完整业务闭环。</span></div>
+      <a href="../index.html">进入完整原型</a>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="preview"><iframe src="direction-a.html" title="方向 A"></iframe></div>
+        <div class="meta">
+          <div class="row"><div><span class="num">DIRECTION 01</span><h2>清晰运营</h2></div></div>
+          <div class="desc">高密度但层级清楚，强调任务、规则和转化效率，适合规模化团队日常使用。</div>
+          <a class="open" href="direction-a.html">打开完整预览</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="preview"><iframe src="direction-b.html" title="方向 B"></iframe></div>
+        <div class="meta">
+          <div class="row"><div><span class="num">DIRECTION 02</span><h2>温暖关系</h2></div></div>
+          <div class="desc">更突出坐席节奏、客户意向和沟通上下文，降低长时间操作的心理压力。</div>
+          <a class="open" href="direction-b.html">打开完整预览</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="preview"><iframe src="direction-c.html" title="方向 C"></iframe></div>
+        <div class="meta">
+          <div class="row"><div><span class="num">DIRECTION 03</span><h2>实时调度</h2></div></div>
+          <div class="desc">更强的控制塔感，突出名单流动、坐席状态和异常处理，适合主管监控场景。</div>
+          <a class="open" href="direction-c.html">打开完整预览</a>
+        </div>
+      </article>
+    </section>
+    <div class="foot">
+      <span>方向页保留用于设计对比，第一套已进入完整原型阶段。</span>
+      <span>最后更新：2026-07-26</span>
+    </div>
+  </main>
+  <script>
+    function fitFrames(){
+      document.querySelectorAll('.preview').forEach(function(box){
+        var frame=box.querySelector('iframe');
+        frame.style.transform='scale('+(box.clientWidth/1600)+')';
+      });
+    }
+    addEventListener('load',fitFrames);
+    addEventListener('resize',fitFrames);
+  </script>
+</body>
+</html>

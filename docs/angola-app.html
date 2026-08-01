@@ -1,0 +1,422 @@
+<!doctype html>
+<!--
+ASSUMPTIONS
+- Produto de vendas para clientes whitelist; não é cobrança.
+- Agentes em Angola usam Português (pt-AO) num Android de trabalho.
+- A distribuição é automática; o agente nunca pesquisa, escolhe ou troca clientes.
+- Nomes, montantes e indicadores são dados ilustrativos de protótipo.
+
+DESIGN REASONING
+- Direção A mantida: azul mineral, navy, alta densidade operacional e bordas precisas.
+- Quinze ecrãs cobrem a jornada completa do agente, do acesso à qualidade.
+- Cada telefone é uma máquina de estado independente e usa as dimensões exactas do AndroidFrame.
+-->
+<html lang="pt-AO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Linha Clara — Sistema completo de televendas Angola</title>
+  <style>
+    :root{
+      --ink:#14233b;--muted:#66758a;--line:#d8e1eb;--soft:#eef3f7;--paper:#fff;
+      --canvas:#e9f0f5;--panel:#f5f8fa;--blue:#1d5cff;--blue-dark:#1547bd;--blue-pale:#e9efff;
+      --green:#13805a;--green-pale:#e5f5ee;--amber:#a96100;--amber-pale:#fff1d5;
+      --red:#b74242;--red-pale:#fdeaea;--nav:#11213a;--violet:#6651ad;--violet-pale:#eeeafd;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--canvas);color:var(--ink)}
+    body{font-family:"Avenir Next","Noto Sans",system-ui,sans-serif}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}
+    .page{min-height:100vh;padding:34px 38px 60px;background:linear-gradient(90deg,rgba(19,36,59,.035) 1px,transparent 1px) 0 0/40px 40px,var(--canvas)}
+    .page-head{max-width:1480px;margin:0 auto 27px;display:flex;justify-content:space-between;gap:40px;align-items:flex-end}
+    .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);font-weight:850}
+    h1{font-size:35px;line-height:1.05;letter-spacing:-.04em;margin:8px 0 9px}
+    .head-copy{font-size:13px;color:var(--muted);max-width:820px;line-height:1.65;margin:0}
+    .head-note{font-size:11px;color:var(--muted);text-align:right;line-height:1.6}.head-note b{display:block;color:var(--ink);font-size:12px}
+    .language-switch{display:inline-flex;margin-top:10px;padding:8px 11px;background:var(--nav);color:#fff;text-decoration:none;font-size:10px;font-weight:850;font-style:normal}
+    .zh-guide{max-width:1480px;margin:-8px auto 22px;padding:13px 15px;background:#fff;border:1px solid var(--line);display:none;align-items:center;justify-content:space-between;gap:20px}
+    .zh-guide.show{display:flex}.zh-guide b{font-size:11px}.zh-guide span{font-size:10px;color:var(--muted)}
+    .flow-map{max-width:1480px;margin:0 auto 26px;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border:1px solid var(--line)}
+    .flow-map div{padding:12px 14px;border-right:1px solid var(--line)}.flow-map div:last-child{border:0}
+    .flow-map b{display:block;font-size:10px;margin-bottom:3px}.flow-map span{font-size:9px;color:var(--muted)}
+    .phone-grid{max-width:1480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:28px 24px;align-items:start}
+    .device-slot{min-width:0}.device-label{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;padding:0 4px}
+    .device-label b{font-size:12px}.device-label span{font-size:10px;color:var(--muted);font-style:italic}
+    .phone-stage{height:666px;display:flex;justify-content:center;overflow:hidden}.phone-scale{width:432px;height:912px;transform:scale(.72);transform-origin:top center}
+
+    /* Exact AndroidFrame values translated from assets/android_frame.jsx */
+    .android-frame{display:inline-block;padding:10px;background:#1a1a1a;border-radius:44px;box-shadow:0 0 0 2px #2a2a2a,0 20px 60px rgba(0,0,0,.3);position:relative}
+    .android-screen{position:relative;width:412px;height:892px;border-radius:36px;overflow:hidden;background:#fff}
+    .status-bar{position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;font-family:Roboto,-apple-system,sans-serif;z-index:20;pointer-events:none;color:#1a1a1a}
+    .punch-hole{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:14px;height:14px;background:#000;border-radius:50%;z-index:30}
+    .status-icons{display:flex;align-items:center;gap:6px}.signal{display:flex;gap:2px;align-items:flex-end;height:10px}
+    .signal i{display:block;width:2px;background:currentColor;border-radius:1px}.signal i:nth-child(1){height:4px}.signal i:nth-child(2){height:6px}.signal i:nth-child(3){height:8px}.signal i:nth-child(4){height:10px}
+    .wifi{font-size:11px;font-weight:800}.battery{width:22px;height:10px;border:1.5px solid currentColor;border-radius:2px;padding:1px}.battery span{display:block;width:84%;height:100%;background:currentColor;border-radius:1px}.battery-text{font-size:11px;font-weight:600}
+    .phone-content{position:absolute;top:32px;left:0;right:0;bottom:24px;overflow:hidden;background:#f5f7fa}
+    .android-nav{position:absolute;bottom:0;left:0;right:0;height:24px;display:flex;align-items:center;justify-content:center;z-index:10}.android-nav span{width:100px;height:4px;background:rgba(0,0,0,.4);border-radius:999px}
+
+    .app-screen{height:100%;display:grid;grid-template-rows:68px 1fr 68px;background:#f4f7fa}.app-screen.no-tabs{grid-template-rows:1fr}
+    .app-top{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+    .brand{display:flex;align-items:center;gap:10px}.brand-mark{width:29px;height:29px;background:var(--blue);border-radius:7px;position:relative}
+    .brand-mark:before{content:"";position:absolute;width:10px;height:3px;background:#fff;left:5px;top:8px;box-shadow:0 5px 0 #fff}.brand-mark:after{content:"";position:absolute;width:4px;height:13px;background:#fff;right:6px;top:7px}
+    .brand strong{font-size:14px;display:block}.brand small{font-size:9px;color:var(--muted);display:block;margin-top:2px}
+    .top-actions{display:flex;align-items:center;gap:8px}.sync{font-size:8px;color:var(--green);font-weight:850}.sync:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:4px}
+    .top-button{border:1px solid var(--line);background:#fff;width:28px;height:28px;font-size:9px;font-weight:850;color:var(--ink);position:relative}.top-button.unread:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--red);right:3px;top:3px}
+    .screen-scroll{overflow:auto;padding:17px 17px 24px;scrollbar-width:none}.screen-scroll::-webkit-scrollbar{display:none}
+    .app-tabs{background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 7px 0}
+    .tab{border:0;background:transparent;color:#7c8798;font-size:9px;font-weight:750;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+    .tab span{width:22px;height:20px;display:grid;place-items:center;border:1px solid #c9d2de;color:#69778a;font-size:9px}.tab.active{color:var(--blue)}.tab.active span{background:var(--blue);border-color:var(--blue);color:#fff}
+    .section-kicker{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:850}.screen-title{font-size:22px;letter-spacing:-.04em;margin:5px 0 4px}.screen-sub{font-size:10px;color:var(--muted);line-height:1.45;margin:0}
+    .primary{width:100%;min-height:48px;border:0;background:var(--blue);color:#fff;font-size:12px;font-weight:850;margin-top:12px;box-shadow:0 6px 14px rgba(29,92,255,.2);padding:10px}.primary:hover{background:var(--blue-dark)}
+    .secondary{min-height:39px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:7px 12px;font-size:9px;font-weight:800}.danger{background:var(--red);color:#fff;border-color:var(--red)}
+    .notice{margin-top:11px;padding:10px 11px;background:var(--amber-pale);font-size:9px;line-height:1.5;color:#79531e}.notice.blue{background:var(--blue-pale);color:var(--blue-dark)}.notice.red{background:var(--red-pale);color:#8a3333}
+    .metric-row{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:#fff;margin-top:15px}.metric{padding:12px 10px;border-right:1px solid var(--line)}.metric:last-child{border:0}
+    .metric small{font-size:8px;color:var(--muted);display:block}.metric b{font-size:17px;display:block;margin-top:5px}.metric em{font-size:8px;color:var(--green);font-style:normal;font-weight:800}
+    .card{background:#fff;border:1px solid var(--line);margin-top:12px}.card-head{min-height:29px;background:var(--blue-pale);color:var(--blue-dark);font-size:8px;font-weight:850;display:flex;align-items:center;justify-content:space-between;padding:7px 11px;text-transform:uppercase;letter-spacing:.05em}
+    .client{padding:13px;display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line)}.avatar{width:40px;height:40px;border-radius:50%;background:#dce7fa;color:#244d88;display:grid;place-items:center;font-size:12px;font-weight:900}
+    .client h3{font-size:15px;margin:0}.client p{font-size:8px;color:var(--muted);margin:4px 0 0}.score{margin-left:auto;text-align:right}.score b{font-size:16px;color:var(--blue);display:block}.score small{font-size:7px;color:var(--muted)}
+    .facts{display:grid;grid-template-columns:1fr 1fr}.fact{padding:10px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.fact:nth-child(2n){border-right:0}.fact small{font-size:8px;color:var(--muted);display:block}.fact b{font-size:10px;display:block;margin-top:4px}
+    .product-line{padding:11px 12px;display:flex;justify-content:space-between;align-items:center}.product-line small{font-size:8px;color:var(--muted);display:block}.product-line b{font-size:11px}.badge{display:inline-flex;padding:4px 6px;background:var(--green-pale);color:var(--green);font-size:7px;font-weight:850}.badge.amber{background:var(--amber-pale);color:var(--amber)}.badge.blue{background:var(--blue-pale);color:var(--blue)}.badge.red{background:var(--red-pale);color:var(--red)}
+    .queue-head{display:flex;justify-content:space-between;align-items:center;margin:13px 0 9px}.queue-head b{font-size:11px}.system-chip{font-size:7px;color:var(--blue);background:var(--blue-pale);padding:5px 7px;font-weight:850}
+    .filter-row{display:flex;gap:6px;margin-top:13px}.filter{border:1px solid var(--line);background:#fff;height:28px;padding:0 9px;font-size:8px;color:var(--muted)}.filter.active{color:#fff;background:var(--nav);border-color:var(--nav)}
+    .queue-item,.task-item,.message-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);padding:10px;margin-bottom:8px}
+    .queue-item .avatar{width:33px;height:33px;font-size:9px}.queue-item h4,.task-item h4,.message-item h4{font-size:10px;margin:0}.queue-item p,.task-item p,.message-item p{font-size:8px;color:var(--muted);margin:3px 0 0;line-height:1.4}.queue-meta{margin-left:auto;text-align:right}.queue-meta b{font-size:9px;display:block}.queue-meta span{font-size:7px;color:var(--green)}
+    .locked{margin-top:10px;border:1px dashed #b9c5d3;padding:9px;font-size:8px;line-height:1.5;color:var(--muted);text-align:center}
+    .profile-block{background:var(--nav);color:#fff;margin:-17px -17px 0;padding:18px}.profile-top{display:flex;align-items:center;gap:11px}.profile-top .avatar{background:#dbe6fa}.profile-top h2{font-size:18px;margin:0}.profile-top p{font-size:8px;color:#aebdd0;margin:4px 0 0}.profile-flags{display:flex;gap:6px;margin-top:11px}.profile-flags span{border:1px solid #314460;padding:5px 7px;font-size:7px;color:#c1cce0}
+    .journey{background:#fff;border:1px solid var(--line);padding:13px;margin-top:12px}.journey-step{display:grid;grid-template-columns:24px 1fr auto;gap:9px;align-items:start;position:relative;padding-bottom:14px}.journey-step:last-child{padding-bottom:0}
+    .journey-step:not(:last-child):before{content:"";position:absolute;left:11px;top:23px;bottom:1px;width:2px;background:var(--line)}.step-dot{width:24px;height:24px;border-radius:50%;background:var(--green-pale);color:var(--green);display:grid;place-items:center;font-size:8px;font-weight:900;z-index:1}.step-dot.wait{background:var(--soft);color:var(--muted)}
+    .journey-step b{font-size:9px;display:block}.journey-step p{font-size:7px;color:var(--muted);margin:3px 0}.journey-step time{font-size:7px;color:var(--muted)}
+    .call-hero{background:var(--nav);color:#fff;margin:-17px -17px 0;padding:25px 20px 20px;text-align:center}.recording{font-size:8px;color:#85e2bd;text-transform:uppercase;letter-spacing:.09em;font-weight:850}.recording i{display:inline-block;width:7px;height:7px;background:#4dd29b;border-radius:50%;margin-right:6px}
+    .call-avatar{width:64px;height:64px;background:#dce7fa;color:#244d88;border-radius:50%;display:grid;place-items:center;margin:17px auto 10px;font-size:18px;font-weight:900}.call-hero h2{font-size:20px;margin:0}.call-hero p{font-size:8px;color:#aebed2;margin:5px 0}.timer{font-variant-numeric:tabular-nums;font-size:24px;margin-top:12px;font-weight:750;letter-spacing:.08em}
+    .call-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.call-control{border:1px solid #344761;background:#182b47;color:#fff;min-height:42px;font-size:8px;font-weight:750}.call-control.active{background:#fff;color:var(--nav)}
+    .script-card{background:#fff;border:1px solid var(--line);padding:12px;margin-top:11px}.script-card b{font-size:9px}.script-card p{font-size:9px;line-height:1.55;color:#42516a;margin:7px 0 0}.script-card .copy{float:right;border:0;background:var(--blue-pale);color:var(--blue);font-size:7px;padding:5px 7px;font-weight:800}
+    .end-call{width:100%;height:45px;border:0;background:var(--red);color:#fff;font-size:11px;font-weight:850;margin-top:11px}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}.result-choice{min-height:46px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:8px;font-weight:750;padding:8px;text-align:left}.result-choice.selected{border-color:var(--blue);background:var(--blue-pale);color:var(--blue-dark)}
+    .conditional{display:none;margin-top:10px;background:#fff;border:1px solid var(--line);padding:11px}.conditional.show{display:block}.conditional label{font-size:8px;color:var(--muted);display:block;margin-bottom:5px}.conditional input,.conditional select{width:100%;height:34px;border:1px solid var(--line);padding:0 8px;font-size:9px;background:#fff}
+    .time-card{background:#fff;border:1px solid var(--line);padding:11px;margin-top:9px;display:grid;grid-template-columns:45px 1fr auto;gap:9px;align-items:center}.timebox{background:var(--nav);color:#fff;text-align:center;padding:7px 3px}.timebox b{font-size:11px;display:block}.timebox small{font-size:6px;color:#aebed2}.time-card h4{font-size:10px;margin:0}.time-card p{font-size:7px;color:var(--muted);margin:3px 0 0}.time-card button{border:0;background:var(--blue-pale);color:var(--blue);font-size:7px;font-weight:850;height:27px;padding:0 8px}
+    .task-code{width:36px;text-align:center}.task-code b{font-size:10px;display:block}.task-code span{font-size:7px;color:var(--red)}.task-item .badge,.message-item .badge{margin-left:auto}
+    .message-item.unread{border-color:#a9bfff;background:#f9fbff}.message-avatar{width:32px;height:32px;background:var(--nav);color:#fff;display:grid;place-items:center;font-size:8px;font-weight:850}.message-item time{font-size:7px;color:var(--muted);margin-left:auto}
+    .library-row{background:#fff;border:1px solid var(--line);padding:11px;margin-top:8px;display:grid;grid-template-columns:36px 1fr auto;gap:9px;align-items:center}.library-code{width:36px;height:36px;background:var(--blue-pale);color:var(--blue);display:grid;place-items:center;font-size:8px;font-weight:900}.library-row h4{font-size:10px;margin:0}.library-row p{font-size:7px;color:var(--muted);margin:3px 0}.library-row button{border:0;background:transparent;color:var(--blue);font-size:8px;font-weight:850}
+    .calculator{background:#fff;border:1px solid var(--line);padding:13px;margin-top:12px}.calc-row{margin-bottom:12px}.calc-row label{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:6px}.calc-row label b{color:var(--ink)}.calc-row input{width:100%;accent-color:var(--blue)}
+    .calc-result{background:var(--nav);color:#fff;padding:13px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.calc-result small{font-size:7px;color:#aebed2;display:block}.calc-result b{font-size:16px;display:block;margin-top:4px}
+    .goal{background:var(--nav);color:#fff;padding:15px;margin-top:13px}.goal small{font-size:8px;color:#9fb0c8}.goal b{font-size:22px;display:block;margin:5px 0}.goal p{font-size:8px;color:#aebed2;margin:0}.goalbar{height:5px;background:#2b3f5c;margin-top:11px}.goalbar span{display:block;width:72%;height:100%;background:#56c79c}
+    .funnel{background:#fff;border:1px solid var(--line);margin-top:11px;padding:12px}.funnel-row{display:grid;grid-template-columns:76px 1fr 30px;gap:8px;align-items:center;margin:9px 0}.funnel-row label{font-size:8px;color:var(--muted)}.bar{height:6px;background:#edf1f5}.bar span{display:block;height:100%;background:var(--blue)}.funnel-row b{font-size:8px;text-align:right}
+    .score-card{background:#fff;border:1px solid var(--line);padding:13px;margin-top:11px}.score-ring{width:78px;height:78px;border-radius:50%;margin:5px auto 12px;display:grid;place-items:center;background:conic-gradient(var(--green) 0 92%,#e8edf2 92%)}.score-ring div{width:62px;height:62px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}.score-ring b{font-size:20px}.score-ring small{font-size:6px;color:var(--muted)}
+    .quality-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--line)}.quality-row span{font-size:8px;color:var(--muted)}.quality-row b{font-size:9px}
+    .more-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.more-item{min-height:82px;border:1px solid var(--line);background:#fff;text-align:left;padding:11px}.more-item b{font-size:10px;display:block}.more-item span{font-size:7px;color:var(--muted);display:block;margin-top:5px;line-height:1.45}
+    .setting-row{display:flex;align-items:center;gap:10px;padding:12px;background:#fff;border:1px solid var(--line);margin-top:8px}.setting-row>div:first-child{flex:1}.setting-row b{font-size:9px;display:block}.setting-row p{font-size:7px;color:var(--muted);margin:3px 0 0}.toggle{width:34px;height:19px;border-radius:20px;background:#bcc6d2;position:relative;border:0}.toggle:after{content:"";position:absolute;width:15px;height:15px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.15s}.toggle.on{background:var(--green)}.toggle.on:after{left:17px}
+    .login-wrap{height:100%;background:var(--nav);color:#fff;padding:70px 25px 28px;display:flex;flex-direction:column}.login-brand{display:flex;align-items:center;gap:11px}.login-brand .brand-mark{width:38px;height:38px}.login-brand h2{font-size:21px;margin:0}.login-brand p{font-size:9px;color:#9eb0c8;margin:4px 0 0}.login-copy{margin-top:50px}.login-copy small{font-size:9px;color:#84a2d4;text-transform:uppercase;letter-spacing:.1em}.login-copy h1{font-size:27px;margin:8px 0}.login-copy p{font-size:10px;color:#b8c6d9;line-height:1.55}.login-form{margin-top:26px}.field{margin-bottom:12px}.field label{font-size:8px;color:#aebed2;display:block;margin-bottom:6px}.field input{width:100%;height:44px;border:1px solid #3b4e69;background:#172a46;color:#fff;padding:0 11px;font-size:10px}.device-trust{font-size:8px;color:#8fa3bd;margin-top:11px;line-height:1.45}.login-foot{margin-top:auto;border-top:1px solid #30435f;padding-top:14px;font-size:8px;color:#8fa3bd}
+    .toast{position:absolute;left:24px;right:24px;bottom:80px;background:var(--nav);color:#fff;padding:12px 14px;font-size:10px;box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;transform:translateY(8px);transition:.18s;pointer-events:none;z-index:50}.toast.show{opacity:1;transform:none}
+    @media(max-width:1050px){.phone-grid{grid-template-columns:repeat(2,1fr)}.flow-map{grid-template-columns:repeat(2,1fr)}.page-head{align-items:flex-start}.head-note{display:none}}
+    @media(max-width:680px){.phone-grid{grid-template-columns:1fr}.flow-map{grid-template-columns:1fr}.page{padding:24px 12px}.phone-stage{height:700px}.phone-scale{transform:scale(.76)}h1{font-size:29px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <div>
+        <div class="eyebrow">Angola · Android · pt-AO · Whitelist sales</div>
+        <h1>Sistema completo do agente</h1>
+        <p class="head-copy">Quinze ecrãs cobrem acesso, trabalho diário, venda assistida, acompanhamento e qualidade. A fila é automática, cada chamada é gravada e nenhum agente pode escolher clientes.</p>
+      </div>
+      <div class="head-note"><b>Protótipo funcional · Direção A</b>Clique em botões, abas, resultados, filtros e controlos.<br><a class="language-switch" id="languageSwitch" href="angola-app-zh.html">中文讲解版</a></div>
+    </header>
+    <aside class="zh-guide" id="zhGuide"><b>中文讲解版</b><span>与安哥拉葡语业务版逐页对应，用于内部产品评审、业务培训和方案汇报。</span></aside>
+    <section class="flow-map">
+      <div><b>1 · Acesso seguro</b><span>Dispositivo autorizado e sessão</span></div>
+      <div><b>2 · Trabalho atribuído</b><span>Fila bloqueada pelo sistema</span></div>
+      <div><b>3 · Venda assistida</b><span>Perfil, chamada e produto</span></div>
+      <div><b>4 · Resultado e seguimento</b><span>Motivo, retorno e ciclo de vida</span></div>
+      <div><b>5 · Qualidade e desempenho</b><span>Coaching, dados e conformidade</span></div>
+    </section>
+    <section class="phone-grid" id="phoneGrid"></section>
+  </main>
+  <script>
+    const isZh=document.documentElement.dataset.lang==="zh"||location.pathname.includes("angola-app-zh")||new URLSearchParams(location.search).get("lang")==="zh";
+    const zh={
+      "Angola · Android · pt-AO · Whitelist sales":"安哥拉 · Android · 白名单电销",
+      "Sistema completo do agente":"完整坐席 App 页面",
+      "Quinze ecrãs cobrem acesso, trabalho diário, venda assistida, acompanhamento e qualidade. A fila é automática, cada chamada é gravada e nenhum agente pode escolher clientes.":"15 个页面覆盖安全登录、自动派单、销售辅助、客户跟进、绩效与质检。名单由系统自动分配，全部通话强制录音，坐席不能挑选客户。",
+      "Protótipo funcional · Direção A":"可交互原型 · 第一套清晰运营",
+      "Clique em botões, abas, resultados, filtros e controlos.":"可点击按钮、导航、结果、筛选与开关进行演示。",
+      "1 · Acesso seguro":"1 · 安全登录","Dispositivo autorizado e sessão":"设备绑定与账号会话",
+      "2 · Trabalho atribuído":"2 · 自动派单","Fila bloqueada pelo sistema":"名单顺序由系统锁定",
+      "3 · Venda assistida":"3 · 辅助销售","Perfil, chamada e produto":"客户、通话与产品信息",
+      "4 · Resultado e seguimento":"4 · 结果与跟进","Motivo, retorno e ciclo de vida":"结果、回拨与生命周期",
+      "5 · Qualidade e desempenho":"5 · 质检与业绩","Coaching, dados e conformidade":"辅导、数据与合规",
+      "01 · Acesso":"01 · 登录","Sessão e dispositivo":"账号与设备",
+      "02 · Hoje":"02 · 今日工作","Resumo operacional":"今日概览",
+      "03 · Fila":"03 · 自动派单","Distribuição automática":"系统自动分配",
+      "04 · Cliente":"04 · 客户详情","Contexto pré-chamada":"拨号前客户信息",
+      "05 · Chamada":"05 · 通话中","Gravação e assistência":"录音与销售辅助",
+      "06 · Resultado":"06 · 通话结果","Registo obrigatório":"必须登记",
+      "07 · Retornos":"07 · 回拨任务","Agenda protegida":"原坐席保护",
+      "08 · Ciclo de vida":"08 · 客户生命周期","Registo à renovação":"注册至复借",
+      "09 · Tarefas":"09 · 我的任务","Pendências atribuídas":"待处理事项",
+      "10 · Mensagens":"10 · 消息中心","Alertas operacionais":"运营通知",
+      "11 · Guiões":"11 · 电销话术","Argumentos e objeções":"开场与异议处理",
+      "12 · Produto":"12 · 推广产品","Oferta e simulação":"产品与试算",
+      "13 · Desempenho":"13 · 个人业绩","Conversão individual":"坐席转化",
+      "14 · Qualidade":"14 · 通话质检","Coaching e conformidade":"辅导与合规",
+      "15 · Mais":"15 · 更多","Conta, ajuda e definições":"账号、帮助与设置",
+      "Linha Clara":"Linha Clara","Vendas whitelist · Angola":"白名单电销 · 安哥拉","Acesso seguro":"安全登录",
+      "Bom trabalho começa com confiança.":"安全合规地开始今日工作",
+      "Entre com a sua conta de agente. Este dispositivo será associado à equipa Angola.":"使用坐席账号登录，本设备将绑定至安哥拉团队。",
+      "Número de agente":"坐席编号","PIN":"登录 PIN","Entrar no turno":"开始今日班次",
+      "Dispositivo AO-LDA-082 · localização da equipa confirmada · gravação autorizada.":"设备 AO-LDA-082 · 已确认所属团队 · 已启用录音权限。",
+      "Precisa de ajuda? Contacte o supervisor antes de iniciar chamadas.":"如需帮助，请在拨号前联系主管。",
+      "Minha operação · hoje":"我的工作 · 今日","Bom dia, Amélia":"早上好，Amélia","O sistema preparou a próxima oportunidade.":"系统已分配下一位白名单客户。",
+      "Concluídos":"已完成","Retornos":"待回拨","Pedidos":"申请","+3 hoje":"今日 +3","no prazo":"均未超时",
+      "Próximo cliente":"下一位客户","ATRIBUÍDO HÁ 18 MIN":"18 分钟前分配","Luanda · Português":"罗安达 · 葡萄牙语","prioridade":"优先级",
+      "Origem":"名单来源","Campanha Julho":"7 月白名单","Melhor horário":"最佳联系时间","Agora":"现在","Produto principal":"主推产品","Alta afinidade":"高匹配",
+      "Preparar chamada":"准备拨号","A oportunidade foi atribuída automaticamente. Não pode trocar ou escolher outro contacto.":"客户由系统自动分配，坐席不能更换或挑选其他客户。",
+      "Meu turno":"我的班次","Fila atribuída":"已分配名单","18 contactos":"18 位客户","Ordem definida por Angola · Flex v4.1.":"顺序由安哥拉 Flex v4.1 分配规则决定。",
+      "Agora":"现在","Alta intenção":"高意向","Novos":"新客户","Ordem de trabalho":"处理顺序","ORDEM BLOQUEADA":"顺序已锁定",
+      "primeiro contacto":"首次联系","novo":"新客户","A lista serve apenas para planeamento. Só o primeiro contacto pode ser aberto.":"队列仅用于了解工作量，只能打开系统指定的第一位客户。",
+      "Abrir contacto actual":"打开当前客户","Fila automática":"自动派单队列","Cliente whitelist · ID AO-284910":"白名单客户 · ID AO-284910","Elegível":"符合条件",
+      "Contexto comercial":"销售上下文","86 PONTOS":"优先级 86","Etapa actual":"当前阶段","Simulação iniciada":"已开始试算","Última actividade":"最近活动","Ontem · 18:42":"昨天 · 18:42",
+      "Histórico":"历史记录","1 crédito pago":"已还清 1 笔贷款","Contacto":"联系情况","Sem tentativas hoje":"今日尚未联系","Produto bloqueado":"指定推广产品","Principal":"主推",
+      "Use apenas a oferta apresentada. Valores finais dependem da análise e confirmação no aplicativo do cliente.":"只能推广当前指定产品，最终额度和条件以客户 App 的审批确认结果为准。",
+      "Ligar · 923 640 218":"拨打 · 923 640 218","Ver ciclo de vida completo":"查看完整客户生命周期","Preparar contacto":"拨号前准备",
+      "Chamada gravada · consentimento activo":"通话录音中 · 已取得同意","Silenciar":"静音","Altifalante":"扬声器","Guião":"话术",
+      "Abertura recomendada":"推荐开场话术","COPIAR":"复制",
+      "“Bom dia, Joana. Falo da Linha Clara. Tem uma opção de crédito pré-seleccionada. Posso explicar em dois minutos?”":"「早上好，Joana，我是 Linha Clara 的工作人员。您有一项预选贷款方案，可以用两分钟为您介绍吗？」",
+      "Sinal em tempo real":"实时销售提示","Cliente perguntou sobre prestação mensal. Mostrar simulação, sem prometer aprovação.":"客户询问月供，建议展示试算结果，但不得承诺审批通过。",
+      "Terminar e registar resultado":"结束通话并登记结果","Chamada em curso":"通话进行中","Resultado obrigatório":"必须登记结果","Como terminou?":"本次通话结果是什么？",
+      "Seleccione uma opção para libertar o próximo contacto.":"选择结果后才能领取下一位客户。","Interessado":"有意向","Agendar retorno":"预约回拨","Registo iniciado":"已开始注册","Pedido iniciado":"已开始申请",
+      "Não atendeu":"无人接听","Sem interesse":"无意向","Número inválido":"号码无效","Não contactar":"禁止联系","Data e hora do retorno":"回拨日期与时间",
+      "Motivo de não contactar":"禁止联系原因","Pedido explícito do cliente":"客户明确要求","Contacto incorrecto":"联系方式错误","Nota da chamada":"通话备注",
+      "Cliente pediu explicação sobre prazo e prestação mensal.":"客户希望进一步了解贷款期限和每期金额。","Guardar e receber próximo":"保存并领取下一位客户","Resultado da chamada":"通话结果",
+      "Agenda protegida":"回拨保护","Retornos de hoje":"今日回拨","O retorno volta sempre ao agente original.":"回拨任务始终返回原跟进坐席。",
+      "Hoje · 3":"今天 · 3","Amanhã · 5":"明天 · 5","Atrasados · 1":"已超时 · 1","AGORA":"现在","HOJE":"今天","Crédito Start · pediu para ligar":"Crédito Start · 客户要求回拨",
+      "Registo incompleto · Flex":"注册未完成 · Flex","Crédito aprovado · orientar pedido":"已授信 · 引导申请","Ligar":"拨打",
+      "1 retorno vence nos próximos 30 minutos. Recebe prioridade automática.":"1 个回拨任务将在 30 分钟内到期，系统将自动提高优先级。","Agenda de retornos":"回拨日程",
+      "Visão do cliente":"客户视图","Ciclo de vida":"客户生命周期","Marcos actualizados pelos sistemas de crédito.":"节点由贷款业务系统同步更新。",
+      "Registo concluído":"注册完成","Conta e número confirmados":"账号及手机号已确认","Crédito autorizado":"授信通过","Limite preliminar disponível":"已获得预授信额度",
+      "Primeiro empréstimo":"首次借款","AOA 45.000 · pago no prazo":"AOA 45,000 · 按时结清","Reembolso concluído":"还款完成","Sem atraso registado":"无逾期记录","Renovação elegível":"符合复借条件","Crédito Flex recomendado":"推荐 Crédito Flex",
+      "A chamada é comercial. Não discutir cobrança, penalizações ou ameaças de bloqueio.":"本次为营销通话，禁止讨论催收、罚息或使用账户冻结等威胁性表达。","Contactar sobre renovação":"联系客户推广复借",
+      "Meu trabalho":"我的工作","Tarefas atribuídas":"已分配任务","Organizadas por prazo e próxima melhor acção.":"按时效和下一最佳动作排序。","Todas · 22":"全部 · 22","Chamadas":"电话任务","Pendências":"待处理",
+      "Prioridade actual":"当前优先任务","AUTO":"自动","Primeiros contactos":"首次联系","Fila Angola · Crédito Flex":"安哥拉队列 · Crédito Flex","Abrir":"打开","Retornos agendados":"预约回拨","1 vence em 30 minutos":"1 个将在 30 分钟内到期",
+      "Urgente":"紧急","Resultado incompleto":"结果未完成","Nota obrigatória em falta":"缺少必填通话备注","Corrigir":"补充","Feedback de qualidade":"质检反馈","Chamadas avaliadas pelo supervisor":"主管已完成通话质检","Ver":"查看","Tarefas":"任务",
+      "Centro de mensagens":"消息中心","3 novas":"3 条新消息","Alertas da operação, supervisor e sistema.":"来自运营、主管和系统的通知。","Reunião rápida às 11:45":"11:45 快速会议","Rever objeções sobre prestação mensal.":"复盘客户对每期金额的异议。",
+      "Novo lote atribuído":"新批次已分配","18 contactos · Crédito Flex · Angola.":"18 位客户 · Crédito Flex · 安哥拉","Avaliação disponível":"质检结果已生成","Qualidade 92 · ver comentário.":"质量得分 92 · 查看评语","Guião actualizado":"话术已更新","Nova explicação sobre custos totais.":"新增总成本解释话术。","Ontem":"昨天","Mensagens":"消息",
+      "Biblioteca comercial":"销售知识库","Guiões e objeções":"电销话术与异议处理","Conteúdo aprovado para chamadas em Angola.":"安哥拉团队可使用的审核版内容。","Abertura":"开场","Objeções":"异议","Fecho":"结束",
+      "Abertura · cliente recorrente":"开场 · 复借客户","“Bom dia. Por ter concluído o crédito anterior, existe uma nova opção disponível para consulta. Posso explicar?”":"「早上好，您已结清上一笔贷款，目前有新的方案可供查看，可以为您介绍吗？」",
+      "Objeção · “Está caro”":"异议 ·「费用太高」","“Posso mostrar o custo total e as prestações. A decisão é sua e a aprovação só acontece no aplicativo.”":"「我可以为您展示总成本和分期金额，是否申请由您决定，最终审批在客户 App 内完成。」",
+      "Consulta rápida":"快速查询","4 actualizações":"4 项更新","Condições, limites e simulação":"条件、额度与试算","Conformidade":"合规要求","Promessas e frases proibidas":"禁止承诺与禁用表达","Guiões aprovados":"审核版话术",
+      "Produto promovido":"指定推广产品","Crédito Flex":"Crédito Flex","Produto principal definido pelo lote. Não pode ser alterado.":"主推产品由名单批次指定，坐席不能更换。","Condições indicativas":"参考条件","ANGOLA":"安哥拉",
+      "Montante":"金额","Prazo":"期限","Elegibilidade":"准入条件","Whitelist activa":"有效白名单","Confirmação":"最终确认","No app do cliente":"客户 App 内确认","30 dias":"30 天",
+      "Prestação estimada":"预计每期金额","Total estimado":"预计总金额","Simulação informativa. Nunca garantir aprovação, valor final ou desembolso.":"试算结果仅供说明，禁止承诺审批、最终额度或放款。","Produto e simulação":"产品与试算",
+      "Meu desempenho":"个人业绩","Conversão de hoje":"今日转化","Qualidade e resultado, não apenas volume.":"关注质量和转化，而不仅是通话数量。","Hoje":"今天","7 dias":"近 7 天","Mês":"本月",
+      "Meta diária · pedidos iniciados":"每日目标 · 已开始申请","4 de 6":"4 / 6","72% da meta · equipa em 68%":"已完成目标 72% · 团队平均 68%","Chamadas":"通话","12 ligadas":"接通 12 次","Contacto":"接通率","+4 pts":"+4 个百分点","Qualidade":"质检","aprovado":"合格",
+      "Meu funil":"个人漏斗","Atribuídos":"已分配","Ligados":"已接通","Interessados":"有意向","Registos":"已注册","Pedidos":"已申请","Desempenho":"个人业绩",
+      "Qualidade e coaching":"质检与辅导","Pontuação 92":"得分 92","Últimas 10 chamadas avaliadas.":"基于最近 10 次通话。","Consentimento e gravação":"录音与客户同意","Explicação do produto":"产品说明","Sem promessa de aprovação":"未承诺审批结果","Registo de resultado":"结果登记",
+      "Comentário do supervisor":"主管评语","Boa clareza ao explicar o custo total. Na próxima chamada, confirme a compreensão antes de avançar para o pedido.":"总成本解释清晰。下次通话在引导申请前，请先确认客户是否理解。",
+      "Marcar feedback como revisto":"标记为已阅读","Qualidade":"通话质检","Ferramentas e conta":"工具与账号","Mais":"更多","Apoio comercial, dados e preferências.":"销售支持、个人数据与偏好设置。",
+      "Mensagens · 3":"消息 · 3","Alertas do sistema e supervisor":"系统及主管通知","Guiões":"电销话术","Aberturas, objeções e fecho":"开场、异议与结束","Produto":"推广产品","Condições e simulador Flex":"产品条件与 Flex 试算","Funil, metas e tendência":"漏斗、目标与趋势","Coaching e conformidade":"辅导与合规","Ajuda":"帮助","Supervisor e suporte técnico":"联系主管和技术支持",
+      "Definições":"设置","Sincronização móvel":"离线同步","Guardar resultados com rede instável":"弱网环境下保存结果","Português · Angola":"葡萄牙语 · 安哥拉","Idioma gerido pela equipa":"语言由团队配置","Terminar turno":"结束班次","Conta e ferramentas":"账号与工具",
+      "Hoje":"今日","Fila":"队列","Dados":"数据","ONLINE":"在线","Acção concluída.":"操作完成。",
+      "Resultado guardado. Próximo cliente atribuído.":"结果已保存，系统已分配下一位客户。","Guião copiado.":"话术已复制。","Mensagem marcada como lida.":"消息已标记为已读。","Feedback marcado como revisto.":"质检反馈已标记为已读。","Pedido de apoio enviado ao supervisor.":"已向主管发送帮助请求。"
+    };
+    function t(value){return isZh&&(zh[value]||zh[value.trim()])||value}
+    function translateRoot(root){
+      if(!isZh)return;
+      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+      nodes.forEach(node=>{const raw=node.nodeValue,trim=raw.trim();if(trim&&zh[trim])node.nodeValue=raw.replace(trim,zh[trim])});
+      root.querySelectorAll("input").forEach(input=>{if(zh[input.value])input.value=zh[input.value]});
+    }
+    const screenLabels={
+      login:["01 · Acesso","Sessão e dispositivo"],
+      home:["02 · Hoje","Resumo operacional"],
+      queue:["03 · Fila","Distribuição automática"],
+      customer:["04 · Cliente","Contexto pré-chamada"],
+      call:["05 · Chamada","Gravação e assistência"],
+      result:["06 · Resultado","Registo obrigatório"],
+      callback:["07 · Retornos","Agenda protegida"],
+      journey:["08 · Ciclo de vida","Registo à renovação"],
+      tasks:["09 · Tarefas","Pendências atribuídas"],
+      inbox:["10 · Mensagens","Alertas operacionais"],
+      scripts:["11 · Guiões","Argumentos e objeções"],
+      product:["12 · Produto","Oferta e simulação"],
+      performance:["13 · Desempenho","Conversão individual"],
+      quality:["14 · Qualidade","Coaching e conformidade"],
+      more:["15 · Mais","Conta, ajuda e definições"]
+    };
+
+    function tabs(active){
+      return `<nav class="app-tabs">
+        <button class="tab ${active==="home"?"active":""}" data-screen="home"><span>H</span>Hoje</button>
+        <button class="tab ${active==="tasks"||active==="queue"?"active":""}" data-screen="tasks"><span>T</span>Tarefas</button>
+        <button class="tab ${active==="callback"?"active":""}" data-screen="callback"><span>R</span>Retornos</button>
+        <button class="tab ${active==="more"?"active":""}" data-screen="more" data-testid="nav-more"><span>M</span>Mais</button>
+      </nav>`;
+    }
+    function topbar(subtitle="Vendas assistidas"){
+      return `<header class="app-top"><div class="brand"><div class="brand-mark"></div><div><strong>Linha Clara</strong><small>${subtitle}</small></div></div><div class="top-actions"><span class="sync">ONLINE</span><button class="top-button unread" data-screen="inbox">3</button></div></header>`;
+    }
+    function appShell(content,active="home",subtitle){
+      return `<div class="app-screen">${topbar(subtitle)}<div class="screen-scroll">${content}</div>${tabs(active)}</div>`;
+    }
+    function loginScreen(){
+      return `<div class="app-screen no-tabs"><div class="login-wrap"><div class="login-brand"><div class="brand-mark"></div><div><h2>Linha Clara</h2><p>Vendas whitelist · Angola</p></div></div><div class="login-copy"><small>Acesso seguro</small><h1>Bom trabalho começa com confiança.</h1><p>Entre com a sua conta de agente. Este dispositivo será associado à equipa Angola.</p></div><div class="login-form"><div class="field"><label>Número de agente</label><input value="AO-0418"></div><div class="field"><label>PIN</label><input type="password" value="4182"></div><button class="primary" data-action="login" data-testid="login-submit">Entrar no turno</button><p class="device-trust">Dispositivo AO-LDA-082 · localização da equipa confirmada · gravação autorizada.</p></div><div class="login-foot">Precisa de ajuda? Contacte o supervisor antes de iniciar chamadas.</div></div></div>`;
+    }
+    function homeScreen(){
+      return appShell(`<div class="section-kicker">Minha operação · hoje</div><h2 class="screen-title">Bom dia, Amélia</h2><p class="screen-sub">O sistema preparou a próxima oportunidade.</p>
+        <div class="metric-row"><div class="metric"><small>Concluídos</small><b>12</b><em>+3 hoje</em></div><div class="metric"><small>Retornos</small><b>3</b><em>no prazo</em></div><div class="metric"><small>Pedidos</small><b>4</b><em>33%</em></div></div>
+        <article class="card"><div class="card-head"><span>Próximo cliente</span><span>ATRIBUÍDO HÁ 18 MIN</span></div><div class="client"><div class="avatar">JM</div><div><h3>Joana Manuel</h3><p>Luanda · Português</p></div><div class="score"><b>86</b><small>prioridade</small></div></div><div class="facts"><div class="fact"><small>Origem</small><b>Campanha Julho</b></div><div class="fact"><small>Melhor horário</small><b>Agora</b></div></div><div class="product-line"><div><small>Produto principal</small><b>Crédito Flex</b></div><span class="badge">Alta afinidade</span></div></article>
+        <button class="primary" data-action="open-customer" data-testid="app-open-customer">Preparar chamada</button><div class="notice">A oportunidade foi atribuída automaticamente. Não pode trocar ou escolher outro contacto.</div>`,"home","Meu turno");
+    }
+    function queueScreen(){
+      return appShell(`<div class="section-kicker">Fila atribuída</div><h2 class="screen-title">18 contactos</h2><p class="screen-sub">Ordem definida por Angola · Flex v4.1.</p><div class="filter-row"><button class="filter active">Agora</button><button class="filter">Alta intenção</button><button class="filter">Novos</button></div>
+        <div class="queue-head"><b>Ordem de trabalho</b><span class="system-chip">ORDEM BLOQUEADA</span></div>
+        <article class="queue-item" data-action="open-customer"><div class="avatar">JM</div><div><h4>Joana Manuel</h4><p>Crédito Flex · primeiro contacto</p></div><div class="queue-meta"><b>Agora</b><span>86 pts</span></div></article>
+        <article class="queue-item"><div class="avatar">AD</div><div><h4>António Domingos</h4><p>Crédito Flex · Luanda</p></div><div class="queue-meta"><b>09:52</b><span>82 pts</span></div></article>
+        <article class="queue-item"><div class="avatar">MS</div><div><h4>Maria Sebastião</h4><p>Crédito Start · novo</p></div><div class="queue-meta"><b>10:10</b><span>79 pts</span></div></article>
+        <div class="locked">A lista serve apenas para planeamento. Só o primeiro contacto pode ser aberto.</div><button class="primary" data-action="open-customer">Abrir contacto actual</button>`,"tasks","Fila automática");
+    }
+    function customerScreen(){
+      return appShell(`<div class="profile-block"><div class="profile-top"><div class="avatar">JM</div><div><h2>Joana Manuel</h2><p>Cliente whitelist · ID AO-284910</p></div><span class="badge">Elegível</span></div><div class="profile-flags"><span>Luanda</span><span>Português</span><span>14:00–18:00</span></div></div>
+        <article class="card"><div class="card-head"><span>Contexto comercial</span><span>86 PONTOS</span></div><div class="facts"><div class="fact"><small>Etapa actual</small><b>Simulação iniciada</b></div><div class="fact"><small>Última actividade</small><b>Ontem · 18:42</b></div><div class="fact"><small>Histórico</small><b>1 crédito pago</b></div><div class="fact"><small>Contacto</small><b>Sem tentativas hoje</b></div></div><div class="product-line"><div><small>Produto bloqueado</small><b>Crédito Flex</b></div><span class="badge blue">Principal</span></div></article>
+        <div class="notice blue">Use apenas a oferta apresentada. Valores finais dependem da análise e confirmação no aplicativo do cliente.</div>
+        <button class="primary" data-action="call" data-testid="app-call">Ligar · 923 640 218</button><button class="secondary" style="width:100%;margin-top:8px" data-screen="journey">Ver ciclo de vida completo</button>`,"tasks","Preparar contacto");
+    }
+    function callScreen(){
+      return appShell(`<div class="call-hero"><div class="recording"><i></i>Chamada gravada · consentimento activo</div><div class="call-avatar">JM</div><h2>Joana Manuel</h2><p>Crédito Flex · 923 640 218</p><div class="timer">02:18</div><div class="call-controls"><button class="call-control" data-toggle>Silenciar</button><button class="call-control" data-toggle>Altifalante</button><button class="call-control" data-screen="scripts">Guião</button></div></div>
+        <article class="script-card"><button class="copy" data-action="copy">COPIAR</button><b>Abertura recomendada</b><p>“Bom dia, Joana. Falo da Linha Clara. Tem uma opção de crédito pré-seleccionada. Posso explicar em dois minutos?”</p></article>
+        <article class="script-card"><b>Sinal em tempo real</b><p>Cliente perguntou sobre prestação mensal. Mostrar simulação, sem prometer aprovação.</p></article>
+        <button class="end-call" data-action="end-call" data-testid="app-end-call">Terminar e registar resultado</button>`,"home","Chamada em curso");
+    }
+    function resultScreen(){
+      return appShell(`<div class="section-kicker">Resultado obrigatório</div><h2 class="screen-title">Como terminou?</h2><p class="screen-sub">Seleccione uma opção para libertar o próximo contacto.</p><div class="result-grid" data-result-grid>
+          <button class="result-choice" data-result="interessado">Interessado</button><button class="result-choice" data-result="retorno">Agendar retorno</button>
+          <button class="result-choice" data-result="registo">Registo iniciado</button><button class="result-choice" data-result="pedido">Pedido iniciado</button>
+          <button class="result-choice" data-result="nao-atende">Não atendeu</button><button class="result-choice" data-result="recusa">Sem interesse</button>
+          <button class="result-choice" data-result="invalido">Número inválido</button><button class="result-choice" data-result="dnc">Não contactar</button></div>
+        <div class="conditional callback-fields"><label>Data e hora do retorno</label><input value="27/07/2026 · 10:30"></div>
+        <div class="conditional dnc-fields"><label>Motivo de não contactar</label><select><option>Pedido explícito do cliente</option><option>Contacto incorrecto</option></select></div>
+        <article class="script-card"><b>Nota da chamada</b><p contenteditable="true">Cliente pediu explicação sobre prazo e prestação mensal.</p></article>
+        <button class="primary" data-action="save-result" data-testid="app-save-result">Guardar e receber próximo</button>`,"tasks","Resultado da chamada");
+    }
+    function callbackScreen(){
+      return appShell(`<div class="section-kicker">Agenda protegida</div><h2 class="screen-title">Retornos de hoje</h2><p class="screen-sub">O retorno volta sempre ao agente original.</p>
+        <div class="filter-row"><button class="filter active">Hoje · 3</button><button class="filter">Amanhã · 5</button><button class="filter">Atrasados · 1</button></div>
+        <article class="time-card"><div class="timebox"><b>10:30</b><small>AGORA</small></div><div><h4>Maria Sebastião</h4><p>Crédito Start · pediu para ligar</p></div><button data-action="call">Ligar</button></article>
+        <article class="time-card"><div class="timebox"><b>11:15</b><small>HOJE</small></div><div><h4>Pedro Manuel</h4><p>Registo incompleto · Flex</p></div><button data-action="call">Ligar</button></article>
+        <article class="time-card"><div class="timebox"><b>14:40</b><small>HOJE</small></div><div><h4>Ana Tavares</h4><p>Crédito aprovado · orientar pedido</p></div><button data-action="call">Ligar</button></article>
+        <div class="notice">1 retorno vence nos próximos 30 minutos. Recebe prioridade automática.</div>`,"callback","Agenda de retornos");
+    }
+    function journeyScreen(){
+      return appShell(`<div class="section-kicker">Visão do cliente</div><h2 class="screen-title">Ciclo de vida</h2><p class="screen-sub">Marcos actualizados pelos sistemas de crédito.</p><div class="journey">
+        <div class="journey-step"><span class="step-dot">✓</span><div><b>Registo concluído</b><p>Conta e número confirmados</p></div><time>18 Jul</time></div>
+        <div class="journey-step"><span class="step-dot">✓</span><div><b>Crédito autorizado</b><p>Limite preliminar disponível</p></div><time>18 Jul</time></div>
+        <div class="journey-step"><span class="step-dot">✓</span><div><b>Primeiro empréstimo</b><p>AOA 45.000 · pago no prazo</p></div><time>02 Jun</time></div>
+        <div class="journey-step"><span class="step-dot">✓</span><div><b>Reembolso concluído</b><p>Sem atraso registado</p></div><time>02 Jul</time></div>
+        <div class="journey-step"><span class="step-dot wait">5</span><div><b>Renovação elegível</b><p>Crédito Flex recomendado</p></div><time>Agora</time></div></div>
+        <div class="notice blue">A chamada é comercial. Não discutir cobrança, penalizações ou ameaças de bloqueio.</div><button class="primary" data-action="call">Contactar sobre renovação</button>`,"tasks","Ciclo de vida");
+    }
+    function tasksScreen(){
+      return appShell(`<div class="section-kicker">Meu trabalho</div><h2 class="screen-title">Tarefas atribuídas</h2><p class="screen-sub">Organizadas por prazo e próxima melhor acção.</p><div class="filter-row"><button class="filter active">Todas · 22</button><button class="filter">Chamadas</button><button class="filter">Pendências</button></div>
+        <div class="queue-head"><b>Prioridade actual</b><span class="system-chip">AUTO</span></div>
+        <article class="task-item" data-screen="queue"><div class="task-code"><b>18</b><span>AGORA</span></div><div><h4>Primeiros contactos</h4><p>Fila Angola · Crédito Flex</p></div><span class="badge blue">Abrir</span></article>
+        <article class="task-item" data-screen="callback"><div class="task-code"><b>3</b><span>HOJE</span></div><div><h4>Retornos agendados</h4><p>1 vence em 30 minutos</p></div><span class="badge amber">Urgente</span></article>
+        <article class="task-item"><div class="task-code"><b>1</b><span>PEND.</span></div><div><h4>Resultado incompleto</h4><p>Nota obrigatória em falta</p></div><span class="badge red">Corrigir</span></article>
+        <article class="task-item" data-screen="quality"><div class="task-code"><b>2</b><span>NOVO</span></div><div><h4>Feedback de qualidade</h4><p>Chamadas avaliadas pelo supervisor</p></div><span class="badge">Ver</span></article>`,"tasks","Tarefas");
+    }
+    function inboxScreen(){
+      return appShell(`<div class="section-kicker">Centro de mensagens</div><h2 class="screen-title">3 novas</h2><p class="screen-sub">Alertas da operação, supervisor e sistema.</p>
+        <article class="message-item unread" data-action="read"><div class="message-avatar">SUP</div><div><h4>Reunião rápida às 11:45</h4><p>Rever objeções sobre prestação mensal.</p></div><time>09:32</time></article>
+        <article class="message-item unread" data-action="read"><div class="message-avatar">SYS</div><div><h4>Novo lote atribuído</h4><p>18 contactos · Crédito Flex · Angola.</p></div><time>09:18</time></article>
+        <article class="message-item unread" data-action="read"><div class="message-avatar">QA</div><div><h4>Avaliação disponível</h4><p>Qualidade 92 · ver comentário.</p></div><time>Ontem</time></article>
+        <article class="message-item"><div class="message-avatar">OPS</div><div><h4>Guião actualizado</h4><p>Nova explicação sobre custos totais.</p></div><time>25 Jul</time></article>`,"more","Mensagens");
+    }
+    function scriptsScreen(){
+      return appShell(`<div class="section-kicker">Biblioteca comercial</div><h2 class="screen-title">Guiões e objeções</h2><p class="screen-sub">Conteúdo aprovado para chamadas em Angola.</p><div class="filter-row"><button class="filter active">Abertura</button><button class="filter">Objeções</button><button class="filter">Fecho</button></div>
+        <article class="script-card"><button class="copy" data-action="copy">COPIAR</button><b>Abertura · cliente recorrente</b><p>“Bom dia. Por ter concluído o crédito anterior, existe uma nova opção disponível para consulta. Posso explicar?”</p></article>
+        <article class="script-card"><button class="copy" data-action="copy">COPIAR</button><b>Objeção · “Está caro”</b><p>“Posso mostrar o custo total e as prestações. A decisão é sua e a aprovação só acontece no aplicativo.”</p></article>
+        <div class="queue-head"><b>Consulta rápida</b><span class="badge">4 actualizações</span></div>
+        <article class="library-row" data-screen="product"><div class="library-code">PRD</div><div><h4>Crédito Flex</h4><p>Condições, limites e simulação</p></div><button>Abrir</button></article>
+        <article class="library-row"><div class="library-code">CMP</div><div><h4>Conformidade</h4><p>Promessas e frases proibidas</p></div><button>Abrir</button></article>`,"more","Guiões aprovados");
+    }
+    function productScreen(){
+      return appShell(`<div class="section-kicker">Produto promovido</div><h2 class="screen-title">Crédito Flex</h2><p class="screen-sub">Produto principal definido pelo lote. Não pode ser alterado.</p>
+        <article class="card"><div class="card-head"><span>Condições indicativas</span><span>ANGOLA</span></div><div class="facts"><div class="fact"><small>Montante</small><b>AOA 20k–150k</b></div><div class="fact"><small>Prazo</small><b>14–60 dias</b></div><div class="fact"><small>Elegibilidade</small><b>Whitelist activa</b></div><div class="fact"><small>Confirmação</small><b>No app do cliente</b></div></div></article>
+        <div class="calculator"><div class="calc-row"><label>Montante <b id="amountValue">AOA 80.000</b></label><input id="amountRange" type="range" min="20000" max="150000" step="5000" value="80000"></div><div class="calc-row"><label>Prazo <b id="termValue">30 dias</b></label><input id="termRange" type="range" min="14" max="60" value="30"></div><div class="calc-result"><div><small>Prestação estimada</small><b id="installmentValue">AOA 29.600</b></div><div><small>Total estimado</small><b id="totalValue">AOA 88.800</b></div></div></div>
+        <div class="notice red">Simulação informativa. Nunca garantir aprovação, valor final ou desembolso.</div>`,"more","Produto e simulação");
+    }
+    function performanceScreen(){
+      return appShell(`<div class="section-kicker">Meu desempenho</div><h2 class="screen-title">Conversão de hoje</h2><p class="screen-sub">Qualidade e resultado, não apenas volume.</p><div class="filter-row"><button class="filter active">Hoje</button><button class="filter">7 dias</button><button class="filter">Mês</button></div>
+        <div class="goal"><small>Meta diária · pedidos iniciados</small><b>4 de 6</b><p>72% da meta · equipa em 68%</p><div class="goalbar"><span></span></div></div>
+        <div class="metric-row"><div class="metric"><small>Chamadas</small><b>18</b><em>12 ligadas</em></div><div class="metric"><small>Contacto</small><b>66%</b><em>+4 pts</em></div><div class="metric"><small>Qualidade</small><b>92</b><em>aprovado</em></div></div>
+        <article class="funnel"><div class="section-kicker">Meu funil</div><div class="funnel-row"><label>Atribuídos</label><div class="bar"><span style="width:100%"></span></div><b>18</b></div><div class="funnel-row"><label>Ligados</label><div class="bar"><span style="width:67%"></span></div><b>12</b></div><div class="funnel-row"><label>Interessados</label><div class="bar"><span style="width:39%"></span></div><b>7</b></div><div class="funnel-row"><label>Registos</label><div class="bar"><span style="width:28%"></span></div><b>5</b></div><div class="funnel-row"><label>Pedidos</label><div class="bar"><span style="width:22%"></span></div><b>4</b></div></article>`,"more","Desempenho");
+    }
+    function qualityScreen(){
+      return appShell(`<div class="section-kicker">Qualidade e coaching</div><h2 class="screen-title">Pontuação 92</h2><p class="screen-sub">Últimas 10 chamadas avaliadas.</p><article class="score-card"><div class="score-ring"><div><span><b>92</b><small>/ 100</small></span></div></div>
+        <div class="quality-row"><span>Consentimento e gravação</span><b>100</b></div><div class="quality-row"><span>Explicação do produto</span><b>94</b></div><div class="quality-row"><span>Sem promessa de aprovação</span><b>100</b></div><div class="quality-row"><span>Registo de resultado</span><b>84</b></div></article>
+        <article class="script-card"><b>Comentário do supervisor</b><p>Boa clareza ao explicar o custo total. Na próxima chamada, confirme a compreensão antes de avançar para o pedido.</p></article>
+        <button class="secondary" style="width:100%;margin-top:9px" data-action="ack-quality">Marcar feedback como revisto</button>`,"more","Qualidade");
+    }
+    function moreScreen(){
+      return appShell(`<div class="section-kicker">Ferramentas e conta</div><h2 class="screen-title">Mais</h2><p class="screen-sub">Apoio comercial, dados e preferências.</p><div class="more-grid">
+        <button class="more-item" data-screen="inbox"><b>Mensagens · 3</b><span>Alertas do sistema e supervisor</span></button>
+        <button class="more-item" data-screen="scripts" data-testid="more-scripts"><b>Guiões</b><span>Aberturas, objeções e fecho</span></button>
+        <button class="more-item" data-screen="product"><b>Produto</b><span>Condições e simulador Flex</span></button>
+        <button class="more-item" data-screen="performance"><b>Desempenho</b><span>Funil, metas e tendência</span></button>
+        <button class="more-item" data-screen="quality"><b>Qualidade</b><span>Coaching e conformidade</span></button>
+        <button class="more-item" data-action="support"><b>Ajuda</b><span>Supervisor e suporte técnico</span></button></div>
+        <div class="queue-head"><b>Definições</b><span>AO-0418</span></div>
+        <div class="setting-row"><div><b>Sincronização móvel</b><p>Guardar resultados com rede instável</p></div><button class="toggle on" data-toggle></button></div>
+        <div class="setting-row"><div><b>Português · Angola</b><p>Idioma gerido pela equipa</p></div><span class="badge">pt-AO</span></div>
+        <button class="secondary danger" style="width:100%;margin-top:12px" data-action="logout">Terminar turno</button>`,"more","Conta e ferramentas");
+    }
+
+    const renderers={login:loginScreen,home:homeScreen,queue:queueScreen,customer:customerScreen,call:callScreen,result:resultScreen,callback:callbackScreen,journey:journeyScreen,tasks:tasksScreen,inbox:inboxScreen,scripts:scriptsScreen,product:productScreen,performance:performanceScreen,quality:qualityScreen,more:moreScreen};
+    const initialScreens=["login","home","queue","customer","call","result","callback","journey","tasks","inbox","scripts","product","performance","quality","more"];
+    function deviceMarkup(screen,index){
+      const [label,desc]=screenLabels[screen];
+      return `<article class="device-slot"><div class="device-label"><b>${label}</b><span>${desc}</span></div><div class="phone-stage"><div class="phone-scale"><div class="android-frame"><div class="android-screen"><div class="status-bar"><span>9:41</span><div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span class="wifi">⌁</span><span class="battery"><span></span></span><span class="battery-text">84%</span></div></div><div class="punch-hole"></div><div class="phone-content" data-phone="${index}">${renderers[screen]()}</div><div class="android-nav"><span></span></div><div class="toast">Acção concluída.</div></div></div></div></div></article>`;
+    }
+    const grid=document.getElementById("phoneGrid");
+    grid.innerHTML=initialScreens.map(deviceMarkup).join("");
+    if(isZh){
+      document.documentElement.lang="zh-CN";
+      document.title="白名单电销系统 — 安哥拉 App 中文讲解版";
+      document.getElementById("zhGuide").classList.add("show");
+      const languageSwitch=document.getElementById("languageSwitch");
+      languageSwitch.textContent="查看葡语业务版";
+      languageSwitch.href="angola-app.html";
+      translateRoot(document);
+    }
+    function changeScreen(phone,screen){phone.innerHTML=renderers[screen]();translateRoot(phone)}
+    function showToast(phone,message){const toast=phone.closest(".android-screen").querySelector(".toast");toast.textContent=t(message);toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
+    grid.addEventListener("click",event=>{
+      const phone=event.target.closest("[data-phone]");if(!phone)return;
+      const screenTarget=event.target.closest("[data-screen]");if(screenTarget){changeScreen(phone,screenTarget.dataset.screen);return}
+      const action=event.target.closest("[data-action]");
+      if(action){
+        const type=action.dataset.action;
+        if(type==="login")changeScreen(phone,"home");
+        if(type==="open-customer")changeScreen(phone,"customer");
+        if(type==="call")changeScreen(phone,"call");
+        if(type==="end-call")changeScreen(phone,"result");
+        if(type==="save-result"){changeScreen(phone,"queue");showToast(phone,"Resultado guardado. Próximo cliente atribuído.")}
+        if(type==="copy")showToast(phone,"Guião copiado.");
+        if(type==="read"){action.classList.remove("unread");showToast(phone,"Mensagem marcada como lida.")}
+        if(type==="ack-quality")showToast(phone,"Feedback marcado como revisto.");
+        if(type==="support")showToast(phone,"Pedido de apoio enviado ao supervisor.");
+        if(type==="logout")changeScreen(phone,"login");
+      }
+      const result=event.target.closest("[data-result]");
+      if(result){phone.querySelectorAll("[data-result]").forEach(x=>x.classList.remove("selected"));result.classList.add("selected");phone.querySelector(".callback-fields").classList.toggle("show",result.dataset.result==="retorno");phone.querySelector(".dnc-fields").classList.toggle("show",result.dataset.result==="dnc")}
+      const toggle=event.target.closest("[data-toggle]");if(toggle){toggle.classList.toggle(toggle.classList.contains("toggle")?"on":"active")}
+      const filter=event.target.closest(".filter");if(filter){filter.parentElement.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));filter.classList.add("active")}
+    });
+    grid.addEventListener("input",event=>{
+      const phone=event.target.closest("[data-phone]");if(!phone)return;
+      if(event.target.id==="amountRange"||event.target.id==="termRange"){
+        const amount=Number(phone.querySelector("#amountRange").value),term=Number(phone.querySelector("#termRange").value),total=Math.round(amount*1.11),installment=Math.round(total/Math.max(1,Math.round(term/14)));
+        phone.querySelector("#amountValue").textContent="AOA "+amount.toLocaleString(isZh?"zh-CN":"pt-PT");phone.querySelector("#termValue").textContent=term+(isZh?" 天":" dias");phone.querySelector("#installmentValue").textContent="AOA "+installment.toLocaleString(isZh?"zh-CN":"pt-PT");phone.querySelector("#totalValue").textContent="AOA "+total.toLocaleString(isZh?"zh-CN":"pt-PT");
+      }
+    });
+  </script>
+</body>
+</html>

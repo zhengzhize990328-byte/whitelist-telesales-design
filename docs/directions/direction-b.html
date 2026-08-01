@@ -1,0 +1,1090 @@
+<!doctype html>
+<!--
+ASSUMPTIONS
+1. This is a visual-direction prototype, not production software. Names and numeric values are clearly presented as sample operational data.
+2. The Android experience is used by Angolan telesales agents in Portuguese (pt-AO); the desktop experience is used by Bangladeshi operations staff in Bengali (bn-BD), with an English switch visible.
+3. The business is whitelist lead conversion: explain the loan offer, confirm interest, help start an application, schedule a callback, and attribute conversion. No collections or delinquency concepts are used.
+4. No brand assets exist, so Direction B establishes a warm, human visual system using sand, terracotta, ink, and sage.
+
+REASONING
+Direction B is intentionally structured as a “morning worktable,” not a conventional KPI-card dashboard. The phone centers one relationship and one next conversation; a calm sequence rail reduces cognitive load during continuous calling. The desktop uses an editorial briefing layout: allocation flow is the main object, team capacity sits beside it, and exceptions are treated as a short action queue. Shared colors and status language connect both surfaces while their information architecture remains tailored to each role.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Direction B — Human Rhythm</title>
+  <style>
+    :root {
+      --canvas: #eadfce;
+      --paper: #fffaf1;
+      --paper-2: #f6eddf;
+      --ink: #252e29;
+      --muted: #6f756d;
+      --line: #d9cdbb;
+      --rust: #c65d3b;
+      --rust-dark: #93432c;
+      --sage: #54725d;
+      --sage-pale: #dce8d9;
+      --amber-pale: #f2dfb1;
+      --white: #fffdf8;
+      --shadow: rgba(62, 43, 27, .14);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #cfc4b4;
+    }
+    body {
+      font-family: "Avenir Next", "Noto Sans Bengali", "Segoe UI", sans-serif;
+      color: var(--ink);
+    }
+    button { font: inherit; }
+
+    #viewport {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    #canvas {
+      width: 1600px;
+      height: 1000px;
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      background:
+        linear-gradient(rgba(89, 73, 55, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(89, 73, 55, .035) 1px, transparent 1px),
+        var(--canvas);
+      background-size: 32px 32px;
+    }
+    #canvas::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, rgba(255,255,255,.32), transparent 38%);
+      pointer-events: none;
+    }
+
+    .direction-note {
+      position: absolute;
+      left: 62px;
+      top: 44px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #564c40;
+    }
+    .direction-note .index {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #9e8c76;
+      border-radius: 50%;
+      font: 600 13px/1 Georgia, serif;
+    }
+    .direction-note strong {
+      display: block;
+      font: 500 17px/1.2 Georgia, serif;
+      letter-spacing: .02em;
+    }
+    .direction-note span:last-child {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #7a6d5e;
+    }
+
+    /* Exact AndroidFrame geometry from the required Pixel 8 reference:
+       wrapper padding 10, radius 44; screen 412×892, radius 36;
+       status 32, content top 32/bottom 24, nav 24. */
+    .phone-stage {
+      position: absolute;
+      left: 82px;
+      top: 76px;
+      width: 480px;
+      height: 924px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 3;
+    }
+    .android-wrapper {
+      display: inline-block;
+      padding: 10px;
+      background: #1a1a1a;
+      border-radius: 44px;
+      box-shadow: 0 0 0 2px #2a2a2a, 0 20px 60px rgba(0,0,0,.3);
+      position: relative;
+    }
+    .android-screen {
+      position: relative;
+      width: 412px;
+      height: 892px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .android-status {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: Roboto, -apple-system, sans-serif;
+      color: #1a1a1a;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .android-punch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      background: #000;
+      border-radius: 50%;
+      z-index: 30;
+    }
+    .android-icons { display: flex; align-items: center; gap: 6px; }
+    .battery {
+      width: 22px;
+      height: 10px;
+      border: 1.5px solid currentColor;
+      border-radius: 2px;
+      padding: 1px;
+      position: relative;
+    }
+    .battery > i {
+      display: block;
+      width: 84%;
+      height: 100%;
+      background: currentColor;
+      border-radius: 1px;
+    }
+    .battery-text { font-size: 11px; font-weight: 600; margin-left: 2px; }
+    .android-content {
+      position: absolute;
+      top: 32px;
+      left: 0;
+      right: 0;
+      bottom: 24px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .android-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      z-index: 10;
+      background: var(--paper);
+    }
+    .android-nav i {
+      width: 100px;
+      height: 4px;
+      background: rgba(0,0,0,.4);
+      border-radius: 999px;
+    }
+
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+    .app-head {
+      padding: 20px 24px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--rust-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .app-head h1 {
+      margin: 0;
+      font: 500 27px/1.06 Georgia, serif;
+      letter-spacing: -.02em;
+    }
+    .shift-chip {
+      padding: 7px 10px;
+      color: var(--sage);
+      border: 1px solid #afbfaf;
+      border-radius: 999px;
+      background: #f7fbf5;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .rhythm {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 13px 24px 16px;
+    }
+    .rhythm div { min-width: 0; }
+    .rhythm span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .04em;
+    }
+    .rhythm strong {
+      font: 500 17px/1.1 Georgia, serif;
+      color: var(--ink);
+    }
+    .rhythm .good { color: var(--sage); }
+
+    .relationship {
+      margin: 0 18px;
+      padding: 19px 18px 17px;
+      background: #f1dfc9;
+      border-radius: 24px 24px 10px 10px;
+      position: relative;
+      box-shadow: 0 9px 22px rgba(114, 82, 50, .10);
+    }
+    .relationship::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: -7px;
+      height: 1px;
+      background: #b79d7d;
+    }
+    .next-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--rust-dark);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .next-label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rust);
+    }
+    .customer-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-top: 15px;
+    }
+    .initials {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--sage);
+      color: white;
+      font: 500 20px/1 Georgia, serif;
+    }
+    .customer-row h2 {
+      margin: 0 0 3px;
+      font: 500 25px/1.08 Georgia, serif;
+    }
+    .customer-row p {
+      margin: 0;
+      color: #6d5e4d;
+      font-size: 12px;
+    }
+    .offer-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(103, 80, 55, .2);
+    }
+    .offer-line span {
+      display: block;
+      margin-bottom: 3px;
+      color: #766958;
+      font-size: 10px;
+    }
+    .offer-line strong { font-size: 14px; }
+
+    .context {
+      padding: 22px 24px 13px;
+    }
+    .context h3, .script h3 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
+    .context-list {
+      display: grid;
+      gap: 8px;
+    }
+    .context-item {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 8px;
+      align-items: baseline;
+      font-size: 12px;
+    }
+    .context-item span { color: var(--muted); }
+    .context-item strong { font-weight: 650; }
+    .script {
+      margin: 0 24px;
+      padding: 13px 15px;
+      border: 1px solid #d9cbb8;
+      border-radius: 12px;
+      background: rgba(255,255,255,.48);
+    }
+    .script p {
+      margin: 0;
+      color: #5a5f58;
+      font: italic 13px/1.45 Georgia, serif;
+    }
+    .call-area {
+      margin-top: auto;
+      padding: 16px 24px 13px;
+      background: var(--paper);
+    }
+    .call-btn {
+      width: 100%;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--rust);
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(166, 74, 47, .24);
+      transition: transform .16s, background .16s;
+    }
+    .call-btn:hover { background: var(--rust-dark); transform: translateY(-1px); }
+    .call-btn svg { width: 20px; height: 20px; }
+    .sub-actions {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      margin-top: 11px;
+      font-size: 11px;
+      color: #696b66;
+    }
+    .sub-actions button {
+      border: 0;
+      padding: 0;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .sync {
+      margin-top: 12px;
+      text-align: center;
+      color: #777b74;
+      font-size: 10px;
+    }
+    .sync::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: var(--sage);
+      vertical-align: 1px;
+    }
+
+    .bridge {
+      position: absolute;
+      left: 545px;
+      top: 505px;
+      width: 56px;
+      height: 1px;
+      background: #a58f75;
+      z-index: 2;
+    }
+    .bridge::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--rust);
+    }
+    .bridge-label {
+      position: absolute;
+      left: 548px;
+      top: 470px;
+      width: 80px;
+      color: #7a6a59;
+      font-size: 9px;
+      line-height: 1.35;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transform: rotate(-90deg);
+      transform-origin: left bottom;
+    }
+
+    /* Desktop worktable */
+    .desktop {
+      position: absolute;
+      left: 600px;
+      top: 76px;
+      width: 946px;
+      height: 850px;
+      z-index: 2;
+      overflow: hidden;
+      border: 1px solid rgba(92, 72, 52, .27);
+      border-radius: 18px;
+      background: var(--paper);
+      box-shadow: 0 24px 70px var(--shadow);
+    }
+    .desktop-top {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 25px;
+      border-bottom: 1px solid var(--line);
+      background: #fbf4e9;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 750;
+    }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 7px solid var(--rust);
+      background: var(--paper);
+    }
+    .brand small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      color: #6d6f69;
+      font-size: 11px;
+    }
+    .lang {
+      border: 1px solid #cfc2af;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: transparent;
+      color: #555b55;
+    }
+    .user {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--sage);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .desktop-body {
+      height: calc(100% - 64px);
+      display: grid;
+      grid-template-columns: 172px 1fr;
+    }
+    .side {
+      padding: 24px 17px;
+      border-right: 1px solid var(--line);
+      background: #f5ebdc;
+    }
+    .side-group { margin-bottom: 25px; }
+    .side-label {
+      padding: 0 10px 8px;
+      color: #8a7f72;
+      font-size: 9px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 3px 0;
+      padding: 9px 10px;
+      border-radius: 9px;
+      color: #60655e;
+      font-size: 12px;
+    }
+    .nav-item.active {
+      background: var(--ink);
+      color: white;
+    }
+    .nav-icon {
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid currentColor;
+      border-radius: 3px;
+      opacity: .8;
+    }
+    .side-foot {
+      margin-top: 238px;
+      padding: 12px 10px;
+      border-top: 1px solid #d4c4ae;
+      color: #686d66;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+    .side-foot strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--sage);
+      font-size: 11px;
+    }
+
+    .workspace {
+      padding: 29px 30px 24px;
+      overflow: hidden;
+    }
+    .workspace-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+    .workspace-head p {
+      margin: 0 0 5px;
+      color: var(--rust-dark);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .workspace-head h1 {
+      margin: 0;
+      font: 500 30px/1.12 Georgia, "Noto Serif Bengali", serif;
+      letter-spacing: -.02em;
+    }
+    .workspace-head .date {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: right;
+      line-height: 1.5;
+    }
+    .work-grid {
+      display: grid;
+      grid-template-columns: 1.55fr .95fr;
+      gap: 24px;
+    }
+    .briefing {
+      border-top: 2px solid var(--ink);
+    }
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 15px 0 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-title h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+    .section-title span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .flow {
+      padding: 19px 0 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .flow-row {
+      display: grid;
+      grid-template-columns: 118px 1fr 54px;
+      align-items: center;
+      gap: 12px;
+      margin: 13px 0;
+    }
+    .flow-name {
+      font-size: 11px;
+      color: #5d625c;
+    }
+    .track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8ded0;
+    }
+    .track i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--rust);
+    }
+    .track .sage { background: var(--sage); }
+    .track .gold { background: #b78a42; }
+    .flow-count {
+      color: #424943;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: right;
+    }
+    .formula-note {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 12px;
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+    .formula-note strong {
+      color: var(--rust-dark);
+      font-size: 10px;
+    }
+
+    .allocation-list {
+      margin-top: 18px;
+    }
+    .allocation-row {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr 78px;
+      gap: 13px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2d7c7;
+    }
+    .campaign strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 11px;
+    }
+    .campaign span, .owner span {
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .owner { font-size: 10px; }
+    .state {
+      justify-self: end;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--sage);
+      background: var(--sage-pale);
+    }
+    .state.watch {
+      color: #8b6125;
+      background: var(--amber-pale);
+    }
+
+    .right-column { min-width: 0; }
+    .team-card {
+      padding: 18px;
+      color: white;
+      background: var(--sage);
+      border-radius: 4px 18px 18px 18px;
+    }
+    .team-card h2 {
+      margin: 0 0 4px;
+      font-size: 14px;
+    }
+    .team-card > p {
+      margin: 0;
+      color: rgba(255,255,255,.7);
+      font-size: 9px;
+    }
+    .team-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .team-line strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 11px;
+    }
+    .team-line span {
+      color: rgba(255,255,255,.72);
+      font-size: 9px;
+    }
+    .team-meter {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 5px solid rgba(255,255,255,.24);
+      border-top-color: #fff6e8;
+      font: 700 10px/1 Georgia, serif;
+    }
+    .queue {
+      margin-top: 19px;
+      padding-top: 2px;
+      border-top: 2px solid var(--rust);
+    }
+    .queue h2 {
+      margin: 14px 0 4px;
+      font-size: 14px;
+    }
+    .queue > p {
+      margin: 0 0 9px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .queue-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .queue-item strong {
+      display: block;
+      font-size: 10px;
+      line-height: 1.35;
+    }
+    .queue-item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .queue-item button {
+      margin-top: 8px;
+      padding: 5px 8px;
+      border: 1px solid #bdad98;
+      border-radius: 6px;
+      background: transparent;
+      color: #555d56;
+      font-size: 9px;
+      cursor: pointer;
+    }
+    .queue-item button:hover { background: var(--paper-2); }
+    .data-note {
+      margin-top: 14px;
+      color: #918577;
+      font-size: 8px;
+      text-align: right;
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 36px;
+      z-index: 50;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: white;
+      font-size: 11px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.2);
+      opacity: 0;
+      transform: translate(-50%, 10px);
+      transition: .25s ease;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  </style>
+</head>
+<body>
+  <div id="viewport">
+    <main id="canvas">
+      <div class="direction-note">
+        <span class="index">B</span>
+        <div>
+          <strong>Human rhythm</strong>
+          <span>relationship-led telesales</span>
+        </div>
+      </div>
+
+      <section class="phone-stage" aria-label="Android app preview in Portuguese">
+        <div class="android-wrapper">
+          <div class="android-screen">
+            <div class="android-status">
+              <span>9:41</span>
+              <div class="android-icons">
+                <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor" aria-hidden="true">
+                  <rect x="0" y="6" width="2" height="4" rx=".5"/><rect x="4" y="4" width="2" height="6" rx=".5"/>
+                  <rect x="8" y="2" width="2" height="8" rx=".5"/><rect x="12" y="0" width="2" height="10" rx=".5"/>
+                </svg>
+                <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                  <path d="M7 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="currentColor"/>
+                  <path d="M3 6a5 5 0 0 1 8 0" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M.5 3.5a11 11 0 0 1 13 0" stroke="currentColor" stroke-width="1.2" opacity=".6"/>
+                </svg>
+                <span class="battery"><i></i></span><span class="battery-text">84%</span>
+              </div>
+            </div>
+            <div class="android-punch"></div>
+            <div class="android-content">
+              <div class="app">
+                <header class="app-head">
+                  <div>
+                    <p class="eyebrow">Bom dia, Amélia</p>
+                    <h1>Próxima conversa</h1>
+                  </div>
+                  <span class="shift-chip">Online</span>
+                </header>
+                <div class="rhythm">
+                  <div><span>Na fila</span><strong>18</strong></div>
+                  <div><span>Retornos</span><strong>3</strong></div>
+                  <div><span>Ritmo</span><strong class="good">No ponto</strong></div>
+                </div>
+                <article class="relationship">
+                  <div class="next-label">Próximo cliente</div>
+                  <div class="customer-row">
+                    <div class="initials">JM</div>
+                    <div>
+                      <h2>João Manuel</h2>
+                      <p>Luanda · Português</p>
+                    </div>
+                  </div>
+                  <div class="offer-line">
+                    <div><span>Oferta elegível</span><strong>Crédito pessoal</strong></div>
+                    <div><span>Contacto preferido</span><strong>Agora</strong></div>
+                  </div>
+                </article>
+                <section class="context">
+                  <h3>O que ajuda nesta conversa</h3>
+                  <div class="context-list">
+                    <div class="context-item"><span>Origem</span><strong>Campanha parceiros</strong></div>
+                    <div class="context-item"><span>Interesse</span><strong>Simulação iniciada ontem</strong></div>
+                    <div class="context-item"><span>Objetivo</span><strong>Confirmar interesse e orientar pedido</strong></div>
+                  </div>
+                </section>
+                <section class="script">
+                  <h3>Sugestão de abertura</h3>
+                  <p>“Olá, João. Falo sobre a simulação que iniciou. Posso explicar as condições e ajudar no próximo passo?”</p>
+                </section>
+                <div class="call-area">
+                  <button class="call-btn" data-toast="Chamada iniciada — João Manuel">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.4 3.8l2.1 4.4-2 1.7c1.2 2.8 3.5 5.1 6.3 6.3l1.8-2 4.4 2.1-.8 3.3c-.2.8-.9 1.3-1.7 1.3C9.7 20.9 3.2 14.5 3.2 6.6c0-.8.5-1.5 1.3-1.8l2.9-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    Ligar agora
+                  </button>
+                  <div class="sub-actions">
+                    <button data-toast="Retorno agendado">Agendar retorno</button>
+                    <button data-toast="Cliente movido para o fim da fila">Passar por agora</button>
+                  </div>
+                  <div class="sync">Dados sincronizados há 1 min</div>
+                </div>
+              </div>
+            </div>
+            <div class="android-nav"><i></i></div>
+          </div>
+        </div>
+      </section>
+
+      <span class="bridge-label">live assignment</span>
+      <span class="bridge"></span>
+
+      <section class="desktop" aria-label="Operations web dashboard in Bengali" lang="bn">
+        <header class="desktop-top">
+          <div class="brand">
+            <span class="brand-mark"></span>
+            <div>সাদা তালিকা বিক্রয়<small>Whitelist telesales</small></div>
+          </div>
+          <div class="top-actions">
+            <span>সর্বশেষ সিঙ্ক: এখনই</span>
+            <button class="lang">বাংলা · EN</button>
+            <span class="user">RA</span>
+          </div>
+        </header>
+        <div class="desktop-body">
+          <aside class="side">
+            <div class="side-group">
+              <div class="side-label">কাজের জায়গা</div>
+              <div class="nav-item active"><span class="nav-icon"></span>অপারেশন ওভারভিউ</div>
+              <div class="nav-item"><span class="nav-icon"></span>হোয়াইটলিস্ট পুল</div>
+              <div class="nav-item"><span class="nav-icon"></span>বণ্টন নীতি</div>
+              <div class="nav-item"><span class="nav-icon"></span>টিম ও এজেন্ট</div>
+            </div>
+            <div class="side-group">
+              <div class="side-label">মান ও নিয়ন্ত্রণ</div>
+              <div class="nav-item"><span class="nav-icon"></span>রূপান্তর যাত্রা</div>
+              <div class="nav-item"><span class="nav-icon"></span>গুণমান যাচাই</div>
+              <div class="nav-item"><span class="nav-icon"></span>অডিট লগ</div>
+            </div>
+            <div class="side-foot">
+              <strong>সিস্টেম স্বাভাবিক</strong>
+              অ্যাপ ও বরাদ্দ ইঞ্জিন সংযুক্ত আছে।
+            </div>
+          </aside>
+
+          <div class="workspace">
+            <header class="workspace-head">
+              <div>
+                <p>আজকের কাজের ব্রিফিং</p>
+                <h1>অপারেশন ওভারভিউ</h1>
+              </div>
+              <div class="date">রবিবার, ২৬ জুলাই<br>আফ্রিকা শিফট · ০৮:০০–১৭:০০</div>
+            </header>
+
+            <div class="work-grid">
+              <main class="briefing">
+                <div class="section-title">
+                  <h2>হোয়াইটলিস্ট থেকে কথোপকথন</h2>
+                  <span>বর্তমান শিফট</span>
+                </div>
+                <div class="flow">
+                  <div class="flow-row">
+                    <span class="flow-name">যোগ্য তালিকা</span>
+                    <span class="track"><i style="width:100%"></i></span>
+                    <span class="flow-count">1,248</span>
+                  </div>
+                  <div class="flow-row">
+                    <span class="flow-name">এজেন্টে বণ্টিত</span>
+                    <span class="track"><i class="sage" style="width:69%"></i></span>
+                    <span class="flow-count">864</span>
+                  </div>
+                  <div class="flow-row">
+                    <span class="flow-name">যোগাযোগ হয়েছে</span>
+                    <span class="track"><i class="gold" style="width:38%"></i></span>
+                    <span class="flow-count">472</span>
+                  </div>
+                  <div class="flow-row">
+                    <span class="flow-name">আবেদন শুরু</span>
+                    <span class="track"><i style="width:16%"></i></span>
+                    <span class="flow-count">196</span>
+                  </div>
+                  <div class="formula-note">
+                    <strong>অগ্রাধিকার</strong>
+                    <span>তালিকার নতুনত্ব 35% · আবেদনের প্রবণতা 25% · সম্ভাব্য মূল্য 15% · ফলো-আপ সময় 15% · ক্যাম্পেইন 10%</span>
+                  </div>
+                </div>
+
+                <div class="section-title">
+                  <h2>বণ্টন অবস্থা</h2>
+                  <span>নিয়ম → টিম → সুরক্ষা</span>
+                </div>
+                <div class="allocation-list">
+                  <div class="allocation-row">
+                    <div class="campaign"><strong>নতুন পার্টনার তালিকা</strong><span>পর্তুগিজ · লুয়ান্ডা</span></div>
+                    <div class="owner">টিম সোল<span>ক্যাপাসিটি 72%</span></div>
+                    <span class="state">চলমান</span>
+                  </div>
+                  <div class="allocation-row">
+                    <div class="campaign"><strong>অসম্পূর্ণ সিমুলেশন</strong><span>মূল এজেন্টে ফেরত</span></div>
+                    <div class="owner">কলব্যাক রুট<span>সুরক্ষা সক্রিয়</span></div>
+                    <span class="state">চলমান</span>
+                  </div>
+                  <div class="allocation-row">
+                    <div class="campaign"><strong>উচ্চ আগ্রহ স্কোর</strong><span>দক্ষতা-ভিত্তিক রাউটিং</span></div>
+                    <div class="owner">টিম কিসাঙ্গা<span>ক্যাপাসিটি 91%</span></div>
+                    <span class="state watch">নজর দিন</span>
+                  </div>
+                </div>
+              </main>
+
+              <aside class="right-column">
+                <section class="team-card">
+                  <h2>দলের কাজের ছন্দ</h2>
+                  <p>লাইভ ক্যাপাসিটি ও কথোপকথনের চাপ</p>
+                  <div class="team-line">
+                    <div><strong>সক্রিয় এজেন্ট</strong><span>২৪ জন অনলাইন · ৩ জন বিরতিতে</span></div>
+                    <div class="team-meter">72%</div>
+                  </div>
+                  <div class="team-line">
+                    <div><strong>অপেক্ষমাণ কলব্যাক</strong><span>মূল এজেন্টের কাছে অগ্রাধিকার</span></div>
+                    <div class="team-meter">18</div>
+                  </div>
+                </section>
+
+                <section class="queue">
+                  <h2>এখন যা দেখা দরকার</h2>
+                  <p>মানুষের সিদ্ধান্ত প্রয়োজন এমন সংক্ষিপ্ত তালিকা</p>
+                  <div class="queue-item">
+                    <strong>টিম কিসাঙ্গার ধারণক্ষমতা সীমার কাছে</strong>
+                    <span>নতুন তালিকা সাময়িকভাবে টিম সোলে পাঠানো যেতে পারে।</span>
+                    <button data-toast="বণ্টন নীতি খোলা হয়েছে">নীতি দেখুন</button>
+                  </div>
+                  <div class="queue-item">
+                    <strong>১২টি কাজ সময়সীমা পেরিয়েছে</strong>
+                    <span>এজেন্ট অফলাইন; নিরাপদ পুনর্বণ্টনের জন্য প্রস্তুত।</span>
+                    <button data-toast="১২টি কাজ পর্যালোচনার জন্য খোলা হয়েছে">কাজ পর্যালোচনা</button>
+                  </div>
+                  <div class="queue-item">
+                    <strong>কলব্যাক সুরক্ষা স্বাভাবিক</strong>
+                    <span>সব বুক করা কল মূল এজেন্টের সঙ্গে সংরক্ষিত।</span>
+                  </div>
+                </section>
+                <div class="data-note">প্রোটোটাইপ ডেটা · বাস্তব ডেটা নয়</div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="toast" id="toast" role="status"></div>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    function fitCanvas() {
+      const scale = Math.min(window.innerWidth / 1600, window.innerHeight / 1000);
+      canvas.style.transform = `scale(${scale})`;
+    }
+    fitCanvas();
+    window.addEventListener('resize', fitCanvas);
+
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    document.querySelectorAll('[data-toast]').forEach((button) => {
+      button.addEventListener('click', () => {
+        toast.textContent = button.dataset.toast;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+      });
+    });
+  </script>
+</body>
+</html>

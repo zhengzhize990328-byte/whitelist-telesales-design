@@ -1,0 +1,394 @@
+<!--
+ASSUMPTIONS
+- This is a visual direction preview, not production software. Names and operational figures are demonstrative placeholders.
+- App language is Portuguese (pt-AO); Web language is Bengali (bn-BD), with an English switch visible.
+- The product handles pre-qualified whitelist sales leads. No collection, debt, arrears, or repayment-recovery language is used.
+- The Android shell below follows assets/android_frame.jsx exactly: 10px wrapper padding, 44px outer radius,
+  412×892 screen, 36px screen radius, 32px status bar, 14px centered punch-hole, and 24px gesture nav.
+
+REASONING
+- Direction C should feel like a live dispatch control tower without falling into generic navy/neon SaaS styling.
+- A warm charcoal field, bone work surfaces, signal orange and chartreuse create high contrast under long shifts.
+- Hard-edged modules, numbered rails, ownership locks and a visible allocation pipeline make the assignment engine legible.
+- App and Web share the same status colors and typography rhythm so they read as one operational system.
+-->
+<!doctype html>
+<html lang="pt-AO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Direção C — Whitelist Telesales Control Tower</title>
+  <style>
+    :root{
+      --ink:#171814;
+      --ink-2:#24251f;
+      --paper:#f2efe4;
+      --paper-2:#ddd9cb;
+      --line:#45473d;
+      --orange:#ff5a1f;
+      --lime:#c7f247;
+      --amber:#f5c84b;
+      --red:#ff5c52;
+      --muted:#989b8d;
+      --white:#fffdf5;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;background:#0e0f0c;color:var(--paper);overflow:hidden}
+    body{font-family:"Aptos Narrow","Arial Narrow","Noto Sans Bengali","Noto Sans",sans-serif}
+    button{font:inherit}
+    .canvas{
+      position:relative;
+      width:1600px;height:1000px;
+      overflow:hidden;
+      background:
+        linear-gradient(90deg,transparent 39px,rgba(255,255,255,.025) 40px,transparent 41px) 0 0/80px 80px,
+        linear-gradient(0deg,transparent 39px,rgba(255,255,255,.025) 40px,transparent 41px) 0 0/80px 80px,
+        var(--ink);
+    }
+    .topline{
+      height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;
+      padding:0 34px;letter-spacing:.11em;text-transform:uppercase;font-size:11px;
+    }
+    .mark{display:flex;align-items:center;gap:11px;font-weight:800;color:var(--white)}
+    .mark b{display:grid;place-items:center;width:23px;height:23px;background:var(--orange);color:var(--ink);font-size:12px}
+    .topline .direction{margin-left:auto;color:var(--muted)}
+    .topline .direction strong{color:var(--lime);margin-left:10px}
+    .workspace{height:946px;display:grid;grid-template-columns:505px 1fr}
+    .mobile-zone{
+      position:relative;border-right:1px solid var(--line);overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .mobile-zone::before{
+      content:"APP / AGENTE";position:absolute;top:20px;left:28px;
+      color:var(--muted);font-size:10px;letter-spacing:.18em;font-weight:800;
+    }
+    .mobile-zone::after{
+      content:"PT–AO  •  ANDROID";position:absolute;bottom:18px;left:28px;
+      color:var(--muted);font-size:10px;letter-spacing:.14em;
+    }
+    .phone-scale{width:432px;height:912px;transform:scale(.91);transform-origin:center}
+    /* AndroidFrame exact specification translated from android_frame.jsx */
+    .android-wrapper{
+      display:inline-block;padding:10px;background:#1a1a1a;border-radius:44px;
+      box-shadow:0 0 0 2px #2a2a2a,0 20px 60px rgba(0,0,0,.3);position:relative;
+    }
+    .android-screen{
+      position:relative;width:412px;height:892px;border-radius:36px;overflow:hidden;background:#fff;
+    }
+    .android-status{
+      position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;
+      justify-content:space-between;padding:0 24px;font-size:14px;font-weight:500;
+      font-family:Roboto,-apple-system,sans-serif;z-index:20;pointer-events:none;color:#fff;
+    }
+    .android-punch{
+      position:absolute;top:10px;left:50%;transform:translateX(-50%);width:14px;height:14px;
+      background:#000;border-radius:50%;z-index:30;
+    }
+    .status-icons{display:flex;align-items:center;gap:6px}
+    .battery-text{font-size:11px;font-weight:600;margin-left:2px}
+    .battery-shell{width:22px;height:10px;border:1.5px solid currentColor;border-radius:2px;padding:1px;position:relative}
+    .battery-fill{width:82%;height:100%;background:currentColor;border-radius:1px}
+    .android-content{position:absolute;top:32px;left:0;right:0;bottom:24px;overflow:hidden;background:var(--paper)}
+    .android-nav{
+      position:absolute;bottom:0;left:0;right:0;height:24px;display:flex;align-items:center;
+      justify-content:center;gap:60px;z-index:10;background:var(--paper);
+    }
+    .android-nav-button{width:100px;height:4px;background:rgba(0,0,0,.4);border-radius:999px}
+
+    .app-head{height:102px;background:var(--ink);padding:20px 20px 14px;color:var(--white)}
+    .app-brand{display:flex;align-items:center;font-size:11px;letter-spacing:.13em;text-transform:uppercase}
+    .app-brand i{width:8px;height:8px;background:var(--lime);border-radius:50%;margin-right:8px;box-shadow:0 0 0 4px rgba(199,242,71,.12)}
+    .app-brand span:last-child{margin-left:auto;color:#a8aa9f}
+    .app-head h1{font-family:Georgia,serif;font-size:27px;line-height:1;margin:20px 0 0;font-weight:500;letter-spacing:-.03em}
+    .progress-strip{display:grid;grid-template-columns:repeat(5,1fr);height:7px}
+    .progress-strip span{background:#34362e;border-right:2px solid var(--paper)}
+    .progress-strip .done{background:var(--lime)}
+    .progress-strip .live{background:var(--orange)}
+    .queue-meta{display:flex;align-items:center;padding:13px 20px 11px;border-bottom:1px solid #bbb7aa;font-size:11px;color:#606257}
+    .queue-meta strong{font-family:Georgia,serif;font-size:18px;color:var(--ink);margin-right:7px}
+    .queue-meta .lock{margin-left:auto;background:var(--ink);color:var(--lime);padding:6px 8px;font-weight:800;letter-spacing:.08em}
+    .lead{padding:16px 20px 0}
+    .eyebrow{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#65675d;font-weight:800}
+    .lead-name{display:flex;align-items:start;margin-top:8px}
+    .lead-name h2{font-family:Georgia,serif;font-size:30px;line-height:1.05;margin:0;color:var(--ink);font-weight:500;letter-spacing:-.035em}
+    .score{margin-left:auto;background:var(--lime);color:var(--ink);width:52px;height:52px;display:grid;place-items:center;font-size:20px;font-weight:900}
+    .score small{display:block;font-size:7px;letter-spacing:.08em;margin-top:-12px;text-align:center}
+    .chips{display:flex;gap:6px;margin:13px 0 14px;flex-wrap:wrap}
+    .chip{padding:6px 8px;border:1px solid #a7a398;color:#3c3e36;font-size:10px;font-weight:700}
+    .chip.hot{background:var(--orange);border-color:var(--orange);color:#171814}
+    .facts{border-top:1px solid #aaa69a;border-bottom:1px solid #aaa69a}
+    .fact{display:grid;grid-template-columns:105px 1fr;padding:10px 0;border-bottom:1px solid #ccc8bb;font-size:12px;color:#20211d}
+    .fact:last-child{border-bottom:0}
+    .fact span{color:#6d6f65}
+    .script{
+      margin-top:14px;background:var(--white);border:1px solid #c6c2b5;padding:13px 14px;color:#282922;
+      font-family:Georgia,serif;font-size:13px;line-height:1.45;
+    }
+    .script b{display:block;font-family:"Arial Narrow",sans-serif;font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px;color:#77796e}
+    .app-actions{position:absolute;left:0;right:0;bottom:0;padding:12px 20px 16px;background:linear-gradient(0deg,var(--paper) 82%,rgba(242,239,228,0))}
+    .primary-call{
+      width:100%;border:0;background:var(--orange);color:var(--ink);height:57px;font-weight:900;
+      text-transform:uppercase;letter-spacing:.08em;font-size:14px;cursor:pointer;box-shadow:5px 5px 0 var(--ink);
+    }
+    .primary-call:hover{transform:translate(-1px,-1px);box-shadow:7px 7px 0 var(--ink)}
+    .primary-call:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+    .secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+    .secondary-actions button{height:35px;background:transparent;border:1px solid #8f8c82;color:#34352f;font-weight:800;font-size:11px;cursor:pointer}
+
+    .web-zone{padding:22px 28px 26px;overflow:hidden}
+    .browser{height:892px;background:var(--paper);border:1px solid #4f5147;box-shadow:18px 20px 0 rgba(0,0,0,.18);overflow:hidden;color:var(--ink)}
+    .browser-bar{height:38px;background:#292a25;color:#bfc1b5;display:flex;align-items:center;padding:0 13px;font-size:10px;letter-spacing:.08em}
+    .dots{display:flex;gap:5px;margin-right:18px}.dots i{width:8px;height:8px;border-radius:50%;background:#686a5f}.dots i:first-child{background:var(--orange)}
+    .browser-bar .url{border-left:1px solid #55574e;padding-left:14px}
+    .browser-bar .secure{margin-left:auto;color:var(--lime)}
+    .web-shell{height:calc(100% - 38px);display:grid;grid-template-columns:174px 1fr}
+    .side{background:var(--ink);color:var(--paper);padding:20px 13px;display:flex;flex-direction:column}
+    .side-logo{font-family:Georgia,serif;font-size:20px;padding:0 9px 18px;border-bottom:1px solid var(--line)}
+    .side-logo small{font-family:"Arial Narrow",sans-serif;font-size:8px;display:block;letter-spacing:.15em;color:var(--orange);margin-top:5px}
+    .nav{margin-top:17px;display:grid;gap:4px}
+    .nav a{color:#9fa195;text-decoration:none;padding:11px 10px;font-size:12px;border-left:3px solid transparent}
+    .nav a.active{background:var(--paper);color:var(--ink);border-left-color:var(--orange);font-weight:900}
+    .nav a:hover{color:var(--white)}
+    .side-status{margin-top:auto;border-top:1px solid var(--line);padding:15px 8px 0;font-size:9px;color:#96988d;line-height:1.6}
+    .side-status b{color:var(--lime);letter-spacing:.08em}
+    .main{min-width:0;display:flex;flex-direction:column}
+    .web-head{height:73px;border-bottom:1px solid #b6b2a6;display:flex;align-items:center;padding:0 22px}
+    .title small{font-size:9px;letter-spacing:.13em;color:#77796f;text-transform:uppercase}
+    .title h1{font-family:"Noto Serif Bengali",Georgia,serif;margin:5px 0 0;font-size:24px;font-weight:600}
+    .head-tools{margin-left:auto;display:flex;align-items:center;gap:8px}
+    .head-tools button{height:30px;border:1px solid #9b988e;background:transparent;padding:0 10px;font-size:9px;font-weight:800;cursor:pointer}
+    .head-tools .live{background:var(--ink);color:var(--lime);border-color:var(--ink);letter-spacing:.1em}
+    .kpi-rail{height:102px;display:grid;grid-template-columns:1.22fr 1fr 1fr 1fr;border-bottom:1px solid #b6b2a6}
+    .kpi{padding:14px 15px;border-right:1px solid #b6b2a6;position:relative}
+    .kpi:last-child{border-right:0}
+    .kpi .label{font-size:10px;color:#686a60;margin-bottom:8px}
+    .kpi strong{font-family:Georgia,serif;font-size:27px;font-weight:500}
+    .kpi em{font-size:9px;color:#606258;font-style:normal;margin-left:6px}
+    .kpi:first-child{background:var(--orange)}
+    .kpi:first-child .label,.kpi:first-child em{color:#3a2117}
+    .kpi-bar{position:absolute;left:15px;right:15px;bottom:12px;height:4px;background:rgba(0,0,0,.15)}
+    .kpi-bar i{display:block;height:100%;background:var(--ink)}
+    .control-grid{flex:1;display:grid;grid-template-columns:1.45fr .82fr;min-height:0}
+    .dispatch{padding:17px 18px;border-right:1px solid #b6b2a6;min-width:0}
+    .panel-head{display:flex;align-items:end;margin-bottom:12px}
+    .panel-head h2{font-size:13px;margin:0;font-weight:900}
+    .panel-head span{margin-left:auto;font-size:9px;color:#77796e}
+    .pipeline{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #8f8c82;height:72px;margin-bottom:15px}
+    .stage{padding:9px 8px;border-right:1px solid #aaa69b;position:relative}
+    .stage:last-child{border-right:0}
+    .stage b{font-family:Georgia,serif;font-size:21px;font-weight:500}
+    .stage span{display:block;font-size:8px;line-height:1.2;margin-top:4px;color:#686a60}
+    .stage::after{content:"";position:absolute;left:8px;right:8px;bottom:7px;height:3px;background:#c6c2b6}
+    .stage:nth-child(1)::after,.stage:nth-child(2)::after{background:var(--orange)}
+    .stage:nth-child(3)::after{background:var(--amber)}
+    .stage:nth-child(4)::after,.stage:nth-child(5)::after{background:var(--lime)}
+    .table{border-top:2px solid var(--ink)}
+    .tr{display:grid;grid-template-columns:1.35fr .72fr .68fr .65fr .46fr;align-items:center;min-height:43px;border-bottom:1px solid #c3bfb3;font-size:10px}
+    .tr.head{min-height:31px;color:#717368;font-size:8px;letter-spacing:.06em;text-transform:uppercase}
+    .tr > *{padding:0 7px}
+    .agent{display:flex;align-items:center;font-weight:800}
+    .avatar{width:25px;height:25px;background:var(--ink);color:var(--paper);display:grid;place-items:center;margin-right:8px;font-size:8px}
+    .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-right:5px}
+    .status-dot.busy{background:var(--orange)}.status-dot.pause{background:#77796f}
+    .load{height:5px;background:#cfcbc0}.load i{height:100%;display:block;background:var(--ink)}
+    .reason{margin-top:15px;background:var(--ink);color:var(--paper);padding:13px 14px;display:grid;grid-template-columns:120px 1fr;gap:12px}
+    .reason b{font-size:9px;letter-spacing:.12em;color:var(--lime)}
+    .reason p{margin:0;font-size:9px;line-height:1.45;color:#bfc1b5}
+    .right-stack{display:grid;grid-template-rows:1.05fr .95fr;min-height:0}
+    .alerts,.rules{padding:17px 16px;min-height:0}
+    .alerts{border-bottom:1px solid #b6b2a6}
+    .alert{display:grid;grid-template-columns:7px 1fr auto;gap:9px;align-items:start;padding:10px 0;border-bottom:1px solid #ccc8bd;font-size:9px}
+    .alert i{width:7px;height:7px;border-radius:50%;background:var(--orange);margin-top:3px}
+    .alert.ok i{background:var(--lime)}.alert.warn i{background:var(--amber)}
+    .alert b{display:block;font-size:10px;margin-bottom:3px}.alert span{color:#77796e}
+    .alert time{font-size:8px;color:#77796e}
+    .rule-card{border:1px solid #aaa69a;margin-top:10px}
+    .rule-line{display:grid;grid-template-columns:22px 1fr auto;padding:10px 9px;border-bottom:1px solid #c8c4b8;align-items:center;font-size:9px}
+    .rule-line:last-child{border-bottom:0}.rule-line b{font-family:Georgia,serif;font-size:14px}
+    .rule-line span:last-child{color:#6d6f65}
+    .footer-ticker{
+      position:absolute;left:505px;right:0;bottom:0;height:27px;background:var(--lime);color:var(--ink);
+      display:flex;align-items:center;padding:0 22px;font-size:9px;font-weight:900;letter-spacing:.08em;
+    }
+    .footer-ticker span{margin-left:auto;font-weight:600}
+    .toast{
+      position:absolute;left:50%;bottom:30px;transform:translate(-50%,20px);background:var(--ink);
+      color:var(--lime);padding:10px 14px;font-size:11px;opacity:0;transition:.2s;z-index:60;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <header class="topline">
+      <div class="mark"><b>W</b> Whitelist Sales OS</div>
+      <div class="direction">Visual exploration <strong>Direction C / Dispatch Control</strong></div>
+    </header>
+
+    <section class="workspace">
+      <div class="mobile-zone">
+        <div class="phone-scale">
+          <div class="android-wrapper">
+            <div class="android-screen">
+              <div class="android-status">
+                <span>09:41</span>
+                <div class="status-icons">
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor" aria-hidden="true">
+                    <rect x="0" y="6" width="2" height="4" rx=".5"/><rect x="4" y="4" width="2" height="6" rx=".5"/>
+                    <rect x="8" y="2" width="2" height="8" rx=".5"/><rect x="12" y="0" width="2" height="10" rx=".5"/>
+                  </svg>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                    <path d="M7 9a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/>
+                    <path d="M3 6a5 5 0 018 0" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M.5 3.5a11 11 0 0113 0" stroke="currentColor" stroke-width="1.2" opacity=".6"/>
+                  </svg>
+                  <div class="battery-shell"><div class="battery-fill"></div></div><span class="battery-text">82%</span>
+                </div>
+              </div>
+              <div class="android-punch"></div>
+              <div class="android-content">
+                <div class="app-head">
+                  <div class="app-brand"><i></i><span>Fila ativa</span><span>Sincronizado agora</span></div>
+                  <h1>Próximo cliente</h1>
+                </div>
+                <div class="progress-strip"><span class="done"></span><span class="done"></span><span class="live"></span><span></span><span></span></div>
+                <div class="queue-meta"><strong>07</strong> de 18 contactos hoje <span class="lock">ATRIBUÍDO A SI</span></div>
+                <div class="lead">
+                  <div class="eyebrow">Cliente pré-qualificado · Luanda</div>
+                  <div class="lead-name">
+                    <h2>Mateus<br>Domingos</h2>
+                    <div class="score">86<small>PRIORIDADE</small></div>
+                  </div>
+                  <div class="chips">
+                    <span class="chip hot">Alta intenção</span><span class="chip">Português</span><span class="chip">Primeiro contacto</span>
+                  </div>
+                  <div class="facts">
+                    <div class="fact"><span>Produto indicado</span><b>Crédito pessoal Flex</b></div>
+                    <div class="fact"><span>Faixa elegível</span><b>AOA 80.000–150.000</b></div>
+                    <div class="fact"><span>Melhor horário</span><b>Agora · até 10:20</b></div>
+                  </div>
+                  <div class="script">
+                    <b>Abertura recomendada</b>
+                    “Bom dia, Mateus. Falo da equipa de crédito Flex. O seu perfil foi pré-selecionado e gostaria de explicar as opções disponíveis.”
+                  </div>
+                </div>
+                <div class="app-actions">
+                  <button class="primary-call" id="callButton">Ligar agora · 923 640 218</button>
+                  <div class="secondary-actions">
+                    <button>Ver perfil completo</button><button>Passar para depois</button>
+                  </div>
+                </div>
+              </div>
+              <div class="android-nav"><div class="android-nav-button"></div></div>
+              <div class="toast" id="toast">A iniciar chamada…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="web-zone">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="url">ops.whitelist.local / live-dispatch</div>
+            <div class="secure">● LIVE · 12s</div>
+          </div>
+          <div class="web-shell" lang="bn-BD">
+            <aside class="side">
+              <div class="side-logo">Whitelist OS<small>SALES OPERATIONS</small></div>
+              <nav class="nav">
+                <a href="#" class="active">অপারেশন ওভারভিউ</a>
+                <a href="#">হোয়াইটলিস্ট পুল</a>
+                <a href="#">বণ্টন নীতি</a>
+                <a href="#">এজেন্ট ও দল</a>
+                <a href="#">রূপান্তর ফানেল</a>
+                <a href="#">মান যাচাই</a>
+                <a href="#">অডিট লগ</a>
+              </nav>
+              <div class="side-status"><b>ENGINE HEALTHY</b><br>শেষ সিঙ্ক ১২ সেকেন্ড আগে<br>Angola · Shift A</div>
+            </aside>
+            <section class="main">
+              <header class="web-head">
+                <div class="title"><small>লাইভ ডিসপ্যাচ / Angola</small><h1>অপারেশন ওভারভিউ</h1></div>
+                <div class="head-tools">
+                  <button>EN</button><button>আজ · ২৬ জুলাই</button><button class="live">● LIVE</button>
+                </div>
+              </header>
+              <section class="kpi-rail">
+                <div class="kpi"><div class="label">বণ্টনের অপেক্ষায়</div><strong>284</strong><em>যোগ্য লিড</em><div class="kpi-bar"><i style="width:68%"></i></div></div>
+                <div class="kpi"><div class="label">সক্রিয় এজেন্ট</div><strong>38</strong><em>/ 42</em><div class="kpi-bar"><i style="width:90%"></i></div></div>
+                <div class="kpi"><div class="label">আজ সংযুক্ত</div><strong>61%</strong><em>কন্টাক্ট</em><div class="kpi-bar"><i style="width:61%"></i></div></div>
+                <div class="kpi"><div class="label">আবেদন শুরু</div><strong>96</strong><em>আজ</em><div class="kpi-bar"><i style="width:52%"></i></div></div>
+              </section>
+              <div class="control-grid">
+                <section class="dispatch">
+                  <div class="panel-head"><h2>বণ্টন প্রবাহ</h2><span>শেষ ১৫ মিনিট · স্বয়ংক্রিয়</span></div>
+                  <div class="pipeline">
+                    <div class="stage"><b>412</b><span>নতুন তালিকা</span></div>
+                    <div class="stage"><b>384</b><span>যোগ্য</span></div>
+                    <div class="stage"><b>284</b><span>কিউতে</span></div>
+                    <div class="stage"><b>100</b><span>বণ্টিত</span></div>
+                    <div class="stage"><b>76</b><span>যোগাযোগে</span></div>
+                  </div>
+                  <div class="panel-head"><h2>এজেন্ট লোড</h2><span>ক্ষমতা ও ন্যায্যতা অনুযায়ী</span></div>
+                  <div class="table">
+                    <div class="tr head"><span>এজেন্ট</span><span>অবস্থা</span><span>কাজ</span><span>লোড</span><span>স্কোর</span></div>
+                    <div class="tr"><div class="agent"><i class="avatar">AM</i>Ana Manuel</div><span><i class="status-dot busy"></i>কলে</span><b>12 / 18</b><span class="load"><i style="width:67%"></i></span><b>1.08</b></div>
+                    <div class="tr"><div class="agent"><i class="avatar">JC</i>João Cossa</div><span><i class="status-dot"></i>প্রস্তুত</span><b>8 / 18</b><span class="load"><i style="width:44%"></i></span><b>1.16</b></div>
+                    <div class="tr"><div class="agent"><i class="avatar">TM</i>Teresa M.</div><span><i class="status-dot busy"></i>কলে</span><b>14 / 18</b><span class="load"><i style="width:78%"></i></span><b>0.92</b></div>
+                    <div class="tr"><div class="agent"><i class="avatar">PD</i>Paulo Dala</div><span><i class="status-dot pause"></i>বিরতি</span><b>7 / 18</b><span class="load"><i style="width:39%"></i></span><b>—</b></div>
+                  </div>
+                  <div class="reason">
+                    <b>সর্বশেষ বণ্টনের কারণ</b>
+                    <p>Mateus Domingos → Ana Manuel · ভাষা ও পণ্য দক্ষতা মিলেছে · ১১টি ক্ষমতা অবশিষ্ট · ন্যায্যতা সহগ 1.04 · গ্রাহক ৩০ মিনিটের জন্য লক</p>
+                  </div>
+                </section>
+                <aside class="right-stack">
+                  <section class="alerts">
+                    <div class="panel-head"><h2>লাইভ সংকেত</h2><span>৪টি সক্রিয়</span></div>
+                    <div class="alert"><i></i><div><b>প্রথম কল SLA ঝুঁকি</b><span>Luanda / Campaign 03 · ১৮ লিড</span></div><time>২ মি</time></div>
+                    <div class="alert ok"><i></i><div><b>Shift A পূর্ণ ক্ষমতায়</b><span>৩৮ এজেন্ট অনলাইন</span></div><time>এখন</time></div>
+                    <div class="alert warn"><i></i><div><b>৬টি কাজ পুনর্বণ্টন</b><span>এজেন্ট অফলাইন হওয়ায়</span></div><time>৭ মি</time></div>
+                    <div class="alert ok"><i></i><div><b>ডুপ্লিকেট যাচাই সম্পন্ন</b><span>৪১২ রেকর্ড · ২৮ বাদ</span></div><time>১২ মি</time></div>
+                  </section>
+                  <section class="rules">
+                    <div class="panel-head"><h2>সক্রিয় বণ্টন নীতি</h2><span>v3.4</span></div>
+                    <div class="rule-card">
+                      <div class="rule-line"><b>01</b><span>যোগ্যতা ও যোগাযোগ সময়</span><span>বাধ্যতামূলক</span></div>
+                      <div class="rule-line"><b>02</b><span>ভাষা + পণ্য দক্ষতা</span><span>ম্যাচ</span></div>
+                      <div class="rule-line"><b>03</b><span>অগ্রাধিকার স্কোর</span><span>ওজনযুক্ত</span></div>
+                      <div class="rule-line"><b>04</b><span>ক্ষমতা × ন্যায্যতা</span><span>স্বয়ংক্রিয়</span></div>
+                      <div class="rule-line"><b>05</b><span>গ্রাহক মালিকানা লক</span><span>৩০ মিনিট</span></div>
+                    </div>
+                  </section>
+                </aside>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="footer-ticker">ALLOCATION ENGINE · CAPACITY × CONTACT RATE × FAIRNESS <span>284 READY → 38 ACTIVE AGENTS → 12s SYNC</span></div>
+  </main>
+  <script>
+    const callButton = document.getElementById('callButton');
+    const toast = document.getElementById('toast');
+    callButton.addEventListener('click', () => {
+      callButton.textContent = 'A ligar…';
+      toast.classList.add('show');
+      setTimeout(() => {
+        callButton.textContent = 'Chamada em curso · 00:03';
+        toast.textContent = 'Ligação estabelecida';
+      }, 900);
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    });
+    document.querySelectorAll('.nav a').forEach(link => {
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        document.querySelectorAll('.nav a').forEach(item => item.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
