@@ -63,7 +63,7 @@ DESIGN REASONING
     .top-actions{display:flex;align-items:center;gap:8px}.sync{font-size:8px;color:var(--green);font-weight:850}.sync:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:4px}
     .top-button{border:1px solid var(--line);background:#fff;width:28px;height:28px;font-size:9px;font-weight:850;color:var(--ink);position:relative}.top-button.unread:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--red);right:3px;top:3px}
     .screen-scroll{overflow:auto;padding:17px 17px 24px;scrollbar-width:none}.screen-scroll::-webkit-scrollbar{display:none}
-    .app-tabs{background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 7px 0}
+    .app-tabs{background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:4px 5px 0}
     .tab{border:0;background:transparent;color:#7c8798;font-size:9px;font-weight:750;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
     .tab span{width:22px;height:20px;display:grid;place-items:center;border:1px solid #c9d2de;color:#69778a;font-size:9px}.tab.active{color:var(--blue)}.tab.active span{background:var(--blue);border-color:var(--blue);color:#fff}
     .section-kicker{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:850}.screen-title{font-size:22px;letter-spacing:-.04em;margin:5px 0 4px}.screen-sub{font-size:10px;color:var(--muted);line-height:1.45;margin:0}
@@ -94,6 +94,7 @@ DESIGN REASONING
     .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}.result-choice{min-height:46px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:8px;font-weight:750;padding:8px;text-align:left}.result-choice.selected{border-color:var(--blue);background:var(--blue-pale);color:var(--blue-dark)}
     .conditional{display:none;margin-top:10px;background:#fff;border:1px solid var(--line);padding:11px}.conditional.show{display:block}.conditional label{font-size:8px;color:var(--muted);display:block;margin-bottom:5px}.conditional input,.conditional select{width:100%;height:34px;border:1px solid var(--line);padding:0 8px;font-size:9px;background:#fff}
     .time-card{background:#fff;border:1px solid var(--line);padding:11px;margin-top:9px;display:grid;grid-template-columns:45px 1fr auto;gap:9px;align-items:center}.timebox{background:var(--nav);color:#fff;text-align:center;padding:7px 3px}.timebox b{font-size:11px;display:block}.timebox small{font-size:6px;color:#aebed2}.time-card h4{font-size:10px;margin:0}.time-card p{font-size:7px;color:var(--muted);margin:3px 0 0}.time-card button{border:0;background:var(--blue-pale);color:var(--blue);font-size:7px;font-weight:850;height:27px;padding:0 8px}
+    .history-progress{background:var(--nav);color:#fff;margin-top:13px;padding:13px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:end}.history-progress small{font-size:7px;color:#aebed2}.history-progress b{font-size:18px}.history-progress em{font-style:normal;font-size:8px;color:#72d5ad}.history-progress .progress-track{grid-column:1/-1;height:5px;background:#2b3f5c}.history-progress .progress-track span{display:block;width:67%;height:100%;background:#56c79c}.history-record{background:#fff;border:1px solid var(--line);padding:11px;margin-top:9px}.history-record-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.history-record h4{font-size:10px;margin:0}.history-record time{font-size:7px;color:var(--muted)}.history-record p{font-size:8px;color:#49576a;margin:6px 0}.history-record-note{background:#f4f7fa;padding:7px;font-size:7px;color:var(--muted);line-height:1.4}.history-call{width:100%;height:30px;margin-top:8px;border:1px solid var(--blue);background:#fff;color:var(--blue);font-size:8px;font-weight:900}.history-call:active{background:var(--blue);color:#fff}
     .task-code{width:36px;text-align:center}.task-code b{font-size:10px;display:block}.task-code span{font-size:7px;color:var(--red)}.task-item .badge,.message-item .badge{margin-left:auto}
     .message-item.unread{border-color:#a9bfff;background:#f9fbff}.message-avatar{width:32px;height:32px;background:var(--nav);color:#fff;display:grid;place-items:center;font-size:8px;font-weight:850}.message-item time{font-size:7px;color:var(--muted);margin-left:auto}
     .library-row{background:#fff;border:1px solid var(--line);padding:11px;margin-top:8px;display:grid;grid-template-columns:36px 1fr auto;gap:9px;align-items:center}.library-code{width:36px;height:36px;background:var(--blue-pale);color:var(--blue);display:grid;place-items:center;font-size:8px;font-weight:900}.library-row h4{font-size:10px;margin:0}.library-row p{font-size:7px;color:var(--muted);margin:3px 0}.library-row button{border:0;background:transparent;color:var(--blue);font-size:8px;font-weight:850}
@@ -117,7 +118,7 @@ DESIGN REASONING
       <div>
         <div class="eyebrow">Angola · Android · pt-AO · Whitelist sales</div>
         <h1>Sistema completo do agente</h1>
-        <p class="head-copy">Quinze ecrãs cobrem acesso, trabalho diário, venda assistida, acompanhamento e qualidade. A fila é automática, cada chamada é gravada e nenhum agente pode escolher clientes.</p>
+        <p class="head-copy">Dezasseis ecrãs cobrem acesso, trabalho diário, venda assistida, acompanhamento e qualidade. A fila é automática, cada chamada é gravada e nenhum agente pode escolher clientes.</p>
       </div>
       <div class="head-note"><b>Protótipo funcional · Direção A</b>Clique em botões, abas, resultados, filtros e controlos.<br><a class="language-switch" id="languageSwitch" href="angola-app-zh.html">中文讲解版</a></div>
     </header>
@@ -136,7 +137,7 @@ DESIGN REASONING
     const zh={
       "Angola · Android · pt-AO · Whitelist sales":"安哥拉 · Android · 白名单电销",
       "Sistema completo do agente":"完整坐席 App 页面",
-      "Quinze ecrãs cobrem acesso, trabalho diário, venda assistida, acompanhamento e qualidade. A fila é automática, cada chamada é gravada e nenhum agente pode escolher clientes.":"15 个页面覆盖安全登录、自动派单、销售辅助、客户跟进、绩效与质检。名单由系统自动分配，全部通话强制录音，坐席不能挑选客户。",
+      "Dezasseis ecrãs cobrem acesso, trabalho diário, venda assistida, acompanhamento e qualidade. A fila é automática, cada chamada é gravada e nenhum agente pode escolher clientes.":"16 个页面覆盖安全登录、自动派单、销售辅助、客户跟进、绩效与质检。名单由系统自动分配，全部通话强制录音，坐席不能挑选客户。",
       "Protótipo funcional · Direção A":"可交互原型 · 第一套清晰运营",
       "Clique em botões, abas, resultados, filtros e controlos.":"可点击按钮、导航、结果、筛选与开关进行演示。",
       "1 · Acesso seguro":"1 · 安全登录","Dispositivo autorizado e sessão":"设备绑定与账号会话",
@@ -151,14 +152,15 @@ DESIGN REASONING
       "05 · Chamada":"05 · 通话中","Gravação e assistência":"录音与销售辅助",
       "06 · Resultado":"06 · 通话结果","Registo obrigatório":"必须登记",
       "07 · Retornos":"07 · 回拨任务","Agenda protegida":"原坐席保护",
-      "08 · Ciclo de vida":"08 · 客户生命周期","Registo à renovação":"注册至复借",
-      "09 · Tarefas":"09 · 我的任务","Pendências atribuídas":"待处理事项",
-      "10 · Mensagens":"10 · 消息中心","Alertas operacionais":"运营通知",
-      "11 · Guiões":"11 · 电销话术","Argumentos e objeções":"开场与异议处理",
-      "12 · Produto":"12 · 推广产品","Oferta e simulação":"产品与试算",
-      "13 · Desempenho":"13 · 个人业绩","Conversão individual":"坐席转化",
-      "14 · Qualidade":"14 · 通话质检","Coaching e conformidade":"辅导与合规",
-      "15 · Mais":"15 · 更多","Conta, ajuda e definições":"账号、帮助与设置",
+      "08 · Histórico":"08 · 今日历史","Clientes atribuídos hoje":"今日已分配客户",
+      "09 · Ciclo de vida":"09 · 客户生命周期","Registo à renovação":"注册至复借",
+      "10 · Tarefas":"10 · 我的任务","Pendências atribuídas":"待处理事项",
+      "11 · Mensagens":"11 · 消息中心","Alertas operacionais":"运营通知",
+      "12 · Guiões":"12 · 电销话术","Argumentos e objeções":"开场与异议处理",
+      "13 · Produto":"13 · 推广产品","Oferta e simulação":"产品与试算",
+      "14 · Desempenho":"14 · 个人业绩","Conversão individual":"坐席转化",
+      "15 · Qualidade":"15 · 通话质检","Coaching e conformidade":"辅导与合规",
+      "16 · Mais":"16 · 更多","Conta, ajuda e definições":"账号、帮助与设置",
       "Linha Clara":"Linha Clara","Vendas whitelist · Angola":"白名单电销 · 安哥拉","Acesso seguro":"安全登录",
       "Bom trabalho começa com confiança.":"安全合规地开始今日工作",
       "Entre com a sua conta de agente. Este dispositivo será associado à equipa Angola.":"使用坐席账号登录，本设备将绑定至安哥拉团队。",
@@ -191,6 +193,7 @@ DESIGN REASONING
       "Hoje · 3":"今天 · 3","Amanhã · 5":"明天 · 5","Atrasados · 1":"已超时 · 1","AGORA":"现在","HOJE":"今天","Crédito Start · pediu para ligar":"Crédito Start · 客户要求回拨",
       "Registo incompleto · Flex":"注册未完成 · Flex","Crédito aprovado · orientar pedido":"已授信 · 引导申请","Ligar":"拨打",
       "1 retorno vence nos próximos 30 minutos. Recebe prioridade automática.":"1 个回拨任务将在 30 分钟内到期，系统将自动提高优先级。","Agenda de retornos":"回拨日程",
+      "Histórico diário":"今日历史","Todos os clientes atribuídos hoje":"今日全部已分配客户","Todos devem ser tratados. Nenhum contacto pode ser ignorado.":"当天名单必须全部处理，不允许绕过任何客户。","Tratados":"已处理","12 de 18":"12 / 18","6 por tratar":"剩余 6 位待处理","Não atendeu · novo contacto criado":"无人接听 · 已生成再次触达","Retorno agendado para 11:55":"已预约 11:55 再次触达","Atendeu · cliente interessado":"已接通 · 客户感兴趣","Entrada da aplicação enviada":"已发送申请入口","Sem interesse neste momento":"当前暂无意向","Cliente não pretende pedir crédito esta semana":"客户本周暂不考虑借款","Ligar novamente":"再次呼叫","Cada nova chamada cria um registo independente.":"每次再次呼叫都会新增一条独立触达记录。",
       "Visão do cliente":"客户视图","Ciclo de vida":"客户生命周期","Marcos actualizados pelos sistemas de crédito.":"节点由贷款业务系统同步更新。",
       "Registo concluído":"注册完成","Conta e número confirmados":"账号及手机号已确认","Crédito autorizado":"授信通过","Limite preliminar disponível":"已获得预授信额度",
       "Primeiro empréstimo":"首次借款","AOA 45.000 · pago no prazo":"AOA 45,000 · 按时结清","Reembolso concluído":"还款完成","Sem atraso registado":"无逾期记录","Renovação elegível":"符合复借条件","Crédito Flex recomendado":"推荐 Crédito Flex",
@@ -233,14 +236,15 @@ DESIGN REASONING
       call:["05 · Chamada","Gravação e assistência"],
       result:["06 · Resultado","Registo obrigatório"],
       callback:["07 · Retornos","Agenda protegida"],
-      journey:["08 · Ciclo de vida","Registo à renovação"],
-      tasks:["09 · Tarefas","Pendências atribuídas"],
-      inbox:["10 · Mensagens","Alertas operacionais"],
-      scripts:["11 · Guiões","Argumentos e objeções"],
-      product:["12 · Produto","Oferta e simulação"],
-      performance:["13 · Desempenho","Conversão individual"],
-      quality:["14 · Qualidade","Coaching e conformidade"],
-      more:["15 · Mais","Conta, ajuda e definições"]
+      history:["08 · Histórico","Clientes atribuídos hoje"],
+      journey:["09 · Ciclo de vida","Registo à renovação"],
+      tasks:["10 · Tarefas","Pendências atribuídas"],
+      inbox:["11 · Mensagens","Alertas operacionais"],
+      scripts:["12 · Guiões","Argumentos e objeções"],
+      product:["13 · Produto","Oferta e simulação"],
+      performance:["14 · Desempenho","Conversão individual"],
+      quality:["15 · Qualidade","Coaching e conformidade"],
+      more:["16 · Mais","Conta, ajuda e definições"]
     };
 
     function tabs(active){
@@ -248,6 +252,7 @@ DESIGN REASONING
         <button class="tab ${active==="home"?"active":""}" data-screen="home"><span>H</span>Hoje</button>
         <button class="tab ${active==="tasks"||active==="queue"?"active":""}" data-screen="tasks"><span>T</span>Tarefas</button>
         <button class="tab ${active==="callback"?"active":""}" data-screen="callback"><span>R</span>Retornos</button>
+        <button class="tab ${active==="history"?"active":""}" data-screen="history" data-testid="nav-history"><span>H</span>Histórico</button>
         <button class="tab ${active==="more"?"active":""}" data-screen="more" data-testid="nav-more"><span>M</span>Mais</button>
       </nav>`;
     }
@@ -280,8 +285,9 @@ DESIGN REASONING
         <div class="notice blue">Use apenas a oferta apresentada. Valores finais dependem da análise e confirmação no aplicativo do cliente.</div>
         <button class="primary" data-action="call" data-testid="app-call">Ligar · 923 640 218</button><button class="secondary" style="width:100%;margin-top:8px" data-screen="journey">Ver ciclo de vida completo</button>`,"tasks","Preparar contacto");
     }
-    function callScreen(){
-      return appShell(`<div class="call-hero"><div class="recording"><i></i>Chamada gravada · consentimento activo</div><div class="call-avatar">JM</div><h2>Joana Manuel</h2><p>Crédito Flex · 923 640 218</p><div class="timer">02:18</div><div class="call-controls"><button class="call-control" data-toggle>Silenciar</button><button class="call-control" data-toggle>Altifalante</button><button class="call-control" data-screen="scripts">Guião</button></div></div>
+    function callScreen(context={}){
+      const name=context.customerName||"Joana Manuel",initials=context.customerInitials||"JM",phone=context.customerPhone||"923 640 218",product=context.customerProduct||"Crédito Flex";
+      return appShell(`<div class="call-hero"><div class="recording"><i></i>Chamada gravada · consentimento activo</div><div class="call-avatar">${initials}</div><h2>${name}</h2><p>${product} · ${phone}</p><div class="timer">02:18</div><div class="call-controls"><button class="call-control" data-toggle>Silenciar</button><button class="call-control" data-toggle>Altifalante</button><button class="call-control" data-screen="scripts">Guião</button></div></div>
         <article class="script-card"><button class="copy" data-action="copy">COPIAR</button><b>Abertura recomendada</b><p>“Bom dia, Joana. Falo da Linha Clara. Tem uma opção de crédito pré-seleccionada. Posso explicar em dois minutos?”</p></article>
         <article class="script-card"><b>Sinal em tempo real</b><p>Cliente perguntou sobre prestação mensal. Mostrar simulação, sem prometer aprovação.</p></article>
         <button class="end-call" data-action="end-call" data-testid="app-end-call">Terminar e registar resultado</button>`,"home","Chamada em curso");
@@ -304,6 +310,14 @@ DESIGN REASONING
         <article class="time-card"><div class="timebox"><b>11:15</b><small>HOJE</small></div><div><h4>Pedro Manuel</h4><p>Registo incompleto · Flex</p></div><button data-action="call">Ligar</button></article>
         <article class="time-card"><div class="timebox"><b>14:40</b><small>HOJE</small></div><div><h4>Ana Tavares</h4><p>Crédito aprovado · orientar pedido</p></div><button data-action="call">Ligar</button></article>
         <div class="notice">1 retorno vence nos próximos 30 minutos. Recebe prioridade automática.</div>`,"callback","Agenda de retornos");
+    }
+    function historyScreen(){
+      return appShell(`<div class="section-kicker">Histórico diário</div><h2 class="screen-title">Todos os clientes atribuídos hoje</h2><p class="screen-sub">Todos devem ser tratados. Nenhum contacto pode ser ignorado.</p>
+        <div class="history-progress"><div><small>Tratados</small><b>12 de 18</b></div><em>6 por tratar</em><div class="progress-track"><span></span></div></div>
+        <article class="history-record"><div class="history-record-head"><h4>Joana Manuel</h4><time>09:42</time></div><p>Não atendeu · novo contacto criado</p><div class="history-record-note">Retorno agendado para 11:55</div><button class="history-call" data-action="history-call" data-name="Joana Manuel" data-initials="JM" data-phone="923 640 218" data-product="Crédito Flex" data-testid="app-history-call">Ligar novamente</button></article>
+        <article class="history-record"><div class="history-record-head"><h4>Maria Sebastião</h4><time>08:20</time></div><p>Atendeu · cliente interessado</p><div class="history-record-note">Entrada da aplicação enviada</div><button class="history-call" data-action="history-call" data-name="Maria Sebastião" data-initials="MS" data-phone="924 781 306" data-product="Crédito Start" data-testid="app-history-call">Ligar novamente</button></article>
+        <article class="history-record"><div class="history-record-head"><h4>António Domingos</h4><time>07:46</time></div><p>Sem interesse neste momento</p><div class="history-record-note">Cliente não pretende pedir crédito esta semana</div><button class="history-call" data-action="history-call" data-name="António Domingos" data-initials="AD" data-phone="926 408 752" data-product="Crédito Flex" data-testid="app-history-call">Ligar novamente</button></article>
+        <div class="notice blue">Cada nova chamada cria um registo independente.</div>`,"history","Histórico diário");
     }
     function journeyScreen(){
       return appShell(`<div class="section-kicker">Visão do cliente</div><h2 class="screen-title">Ciclo de vida</h2><p class="screen-sub">Marcos actualizados pelos sistemas de crédito.</p><div class="journey">
@@ -369,8 +383,8 @@ DESIGN REASONING
         <button class="secondary danger" style="width:100%;margin-top:12px" data-action="logout">Terminar turno</button>`,"more","Conta e ferramentas");
     }
 
-    const renderers={login:loginScreen,home:homeScreen,queue:queueScreen,customer:customerScreen,call:callScreen,result:resultScreen,callback:callbackScreen,journey:journeyScreen,tasks:tasksScreen,inbox:inboxScreen,scripts:scriptsScreen,product:productScreen,performance:performanceScreen,quality:qualityScreen,more:moreScreen};
-    const initialScreens=["login","home","queue","customer","call","result","callback","journey","tasks","inbox","scripts","product","performance","quality","more"];
+    const renderers={login:loginScreen,home:homeScreen,queue:queueScreen,customer:customerScreen,call:callScreen,result:resultScreen,callback:callbackScreen,history:historyScreen,journey:journeyScreen,tasks:tasksScreen,inbox:inboxScreen,scripts:scriptsScreen,product:productScreen,performance:performanceScreen,quality:qualityScreen,more:moreScreen};
+    const initialScreens=["login","home","queue","customer","call","result","callback","history","journey","tasks","inbox","scripts","product","performance","quality","more"];
     function deviceMarkup(screen,index){
       const [label,desc]=screenLabels[screen];
       return `<article class="device-slot"><div class="device-label"><b>${label}</b><span>${desc}</span></div><div class="phone-stage"><div class="phone-scale"><div class="android-frame"><div class="android-screen"><div class="status-bar"><span>9:41</span><div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span class="wifi">⌁</span><span class="battery"><span></span></span><span class="battery-text">84%</span></div></div><div class="punch-hole"></div><div class="phone-content" data-phone="${index}">${renderers[screen]()}</div><div class="android-nav"><span></span></div><div class="toast">Acção concluída.</div></div></div></div></div></article>`;
@@ -386,7 +400,7 @@ DESIGN REASONING
       languageSwitch.href="angola-app.html";
       translateRoot(document);
     }
-    function changeScreen(phone,screen){phone.innerHTML=renderers[screen]();translateRoot(phone)}
+    function changeScreen(phone,screen){phone.innerHTML=renderers[screen](phone.dataset);translateRoot(phone)}
     function showToast(phone,message){const toast=phone.closest(".android-screen").querySelector(".toast");toast.textContent=t(message);toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
     grid.addEventListener("click",event=>{
       const phone=event.target.closest("[data-phone]");if(!phone)return;
@@ -397,6 +411,7 @@ DESIGN REASONING
         if(type==="login")changeScreen(phone,"home");
         if(type==="open-customer")changeScreen(phone,"customer");
         if(type==="call")changeScreen(phone,"call");
+        if(type==="history-call"){phone.dataset.customerName=action.dataset.name;phone.dataset.customerInitials=action.dataset.initials;phone.dataset.customerPhone=action.dataset.phone;phone.dataset.customerProduct=action.dataset.product;changeScreen(phone,"call")}
         if(type==="end-call")changeScreen(phone,"result");
         if(type==="save-result"){changeScreen(phone,"queue");showToast(phone,"Resultado guardado. Próximo cliente atribuído.")}
         if(type==="copy")showToast(phone,"Guião copiado.");
